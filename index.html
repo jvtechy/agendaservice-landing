@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AgendaService — agende serviços para o seu lar com profissionais verificados, preço transparente e pagamento via PIX. Web App PWA, sem App Store." />
+  <meta name="theme-color" content="#0f0f0f" />
+  <meta property="og:title" content="AgendaService — Serviços domésticos com profissionais verificados" />
+  <meta property="og:description" content="Do agendamento à conclusão: seguro, transparente e direto no navegador." />
+  <meta property="og:type" content="website" />
+  <title>AgendaService — Profissionais verificados, preço justo</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg" />
+  <link rel="apple-touch-icon" href="assets/logo-icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#10B981',
+            dark: { DEFAULT: '#0F0F0F', card: '#1E1E1E', muted: '#2D2D2D' },
+            gold: { DEFAULT: '#F59E0B', light: '#FBBF24' },
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="font-sans text-gray-100 antialiased overflow-x-hidden">
+
+  <!-- Header -->
+  <header id="site-header" class="fixed top-0 inset-x-0 z-50 glass-strong transition-shadow">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="#" class="flex items-center shrink-0" aria-label="AgendaService — início">
+        <img src="assets/logo.svg" alt="AgendaService" class="h-9 sm:h-10 w-auto" />
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-7 text-sm text-gray-300" aria-label="Principal">
+        <a href="#como-funciona" class="hover:text-primary transition-colors">Como Funciona</a>
+        <a href="#clientes" class="hover:text-primary transition-colors">Para Clientes</a>
+        <a href="#prestadores" class="hover:text-primary transition-colors">Para Profissionais</a>
+        <a href="#seguranca" class="hover:text-primary transition-colors">Segurança</a>
+        <a href="#depoimentos" class="hover:text-primary transition-colors">Depoimentos</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a data-app-link data-app-path="/" class="hidden sm:inline-flex btn-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl">
+          Acessar Web App
+        </a>
+        <button id="menu-btn" type="button" class="lg:hidden p-2 rounded-lg text-gray-300 hover:bg-white/5" aria-label="Abrir menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile nav -->
+  <div id="mobile-nav" class="fixed inset-0 z-[60] lg:hidden" aria-hidden="true">
+    <div class="absolute inset-0 bg-black/60 opacity-0 transition-opacity" id="mobile-backdrop"></div>
+    <aside class="absolute top-0 right-0 h-full w-[min(100%,320px)] glass-strong translate-x-full transition-transform duration-300 flex flex-col p-6">
+      <div class="flex justify-between items-center mb-8">
+        <img src="assets/logo.svg" alt="" class="h-8" />
+        <button id="close-menu" type="button" class="p-2 rounded-lg hover:bg-white/5" aria-label="Fechar menu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-4 text-lg">
+        <a href="#como-funciona" class="hover:text-primary">Como Funciona</a>
+        <a href="#clientes" class="hover:text-primary">Para Clientes</a>
+        <a href="#prestadores" class="hover:text-primary">Para Profissionais</a>
+        <a href="#seguranca" class="hover:text-primary">Segurança</a>
+        <a href="#depoimentos" class="hover:text-primary">Depoimentos</a>
+        <a href="#leads" class="hover:text-primary">Novidades</a>
+      </nav>
+      <a data-app-link data-app-path="/" class="mt-8 btn-primary text-center text-white font-semibold py-3 rounded-xl">
+        Acessar Web App
+      </a>
+    </aside>
+  </div>
+
+  <main>
+    <!-- Hero -->
+    <section class="relative pt-28 pb-16 sm:pt-36 sm:pb-24 hero-glow overflow-hidden">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          <div class="reveal">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/25 mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+              PWA — use no navegador, sem App Store ou Play Store
+            </span>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-extrabold leading-tight tracking-tight text-white">
+              Serviços para o seu lar, com
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-primary">profissionais verificados</span>
+              e preço transparente
+            </h1>
+            <p class="mt-5 text-base sm:text-lg text-gray-400 max-w-xl leading-relaxed">
+              Conectamos quem precisa de serviços domésticos de qualidade a prestadores aprovados pela plataforma.
+              Agende, converse pelo chat, pague via PIX e acompanhe tudo em um só lugar.
+            </p>
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+              <a data-app-link data-app-path="/" class="btn-primary inline-flex items-center justify-center gap-2 text-white font-bold px-6 py-3.5 rounded-xl text-sm sm:text-base">
+                Solicitar Serviço Agora
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a data-app-link data-app-path="/" data-app-params='{"auth":"register"}' class="btn-outline-gold inline-flex items-center justify-center gap-2 text-gold-light font-semibold px-6 py-3.5 rounded-xl text-sm sm:text-base">
+                Quero ser Prestador Parceiro
+              </a>
+            </div>
+            <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-xs sm:text-sm text-gray-500">
+              <li class="flex items-center gap-1.5"><span class="text-primary">✓</span> Documentos verificados</li>
+              <li class="flex items-center gap-1.5"><span class="text-primary">✓</span> Valor antes de confirmar</li>
+              <li class="flex items-center gap-1.5"><span class="text-primary">✓</span> Chat + notificações</li>
+            </ul>
+          </div>
+
+          <!-- Phone mockup -->
+          <div class="relative flex justify-center lg:justify-end reveal reveal-delay-2">
+            <div class="phone-frame w-[260px] sm:w-[280px] rounded-[2.5rem] p-3 animate-float">
+              <div class="phone-notch w-24 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[1.75rem] overflow-hidden aspect-[9/18] p-4 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                  <img src="assets/logo-icon.svg" alt="" class="w-8 h-8 rounded-lg" />
+                  <span class="text-[10px] text-gray-500 font-medium">Web App</span>
+                </div>
+                <p class="text-xs font-bold text-white mb-1">Limpeza Residencial</p>
+                <p class="text-[10px] text-gray-500 mb-3">Plano 4h • Profissional verificado</p>
+                <div class="glass rounded-xl p-3 mb-2 flex-1">
+                  <p class="text-[10px] text-gray-400 mb-1">Valor estimado</p>
+                  <p class="text-lg font-bold text-primary">R$ 722,00</p>
+                  <p class="text-[9px] text-gray-500 mt-2">PIX • Chat ativo • PWA</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="bg-dark-muted/80 rounded-lg h-8"></div>
+                  <div class="bg-primary/20 border border-primary/30 rounded-lg h-8 flex items-center justify-center text-[10px] text-primary font-semibold">Agendar</div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -z-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Como Funciona -->
+    <section id="como-funciona" class="py-16 sm:py-24 bg-dark-card/40">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <p class="section-label text-primary text-xs font-bold uppercase mb-2">Como Funciona</p>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Do clique à conclusão, em 4 passos</h2>
+          <p class="mt-3 text-gray-400 text-sm sm:text-base">Fluxo real do AgendaService — simples para clientes e prestadores.</p>
+        </div>
+        <ol class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <li class="glass gradient-border rounded-2xl p-5 relative">
+            <span class="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-primary/15 text-primary font-bold text-sm mb-4">1</span>
+            <h3 class="font-bold text-white mb-2">Escolha o serviço</h3>
+            <p class="text-sm text-gray-400">Navegue pelo catálogo e selecione o serviço ideal para sua necessidade.</p>
+          </li>
+          <li class="glass gradient-border rounded-2xl p-5">
+            <span class="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-primary/15 text-primary font-bold text-sm mb-4">2</span>
+            <h3 class="font-bold text-white mb-2">Agende e pague</h3>
+            <p class="text-sm text-gray-400">Defina data e horário. Veja o valor calculado e pague via PIX — ou solicite orçamento.</p>
+          </li>
+          <li class="glass gradient-border rounded-2xl p-5">
+            <span class="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-primary/15 text-primary font-bold text-sm mb-4">3</span>
+            <h3 class="font-bold text-white mb-2">Prestador aceita</h3>
+            <p class="text-sm text-gray-400">Profissional verificado aceita o serviço e conversa com você pelo chat integrado.</p>
+          </li>
+          <li class="glass gradient-border rounded-2xl p-5">
+            <span class="inline-flex w-9 h-9 items-center justify-center rounded-xl bg-gold/15 text-gold-light font-bold text-sm mb-4">4</span>
+            <h3 class="font-bold text-white mb-2">Conclua e avalie</h3>
+            <p class="text-sm text-gray-400">Serviço finalizado, pagamento liberado e avaliação do prestador na plataforma.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Segurança -->
+    <section id="seguranca" class="py-16 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <p class="section-label text-primary text-xs font-bold uppercase mb-2">Segurança</p>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Sua casa e sua família em mãos seguras</h2>
+          <p class="mt-3 text-gray-400">Confiança construída com processos reais de verificação — não promessas vazias.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <article class="glass rounded-2xl p-6 hover:border-primary/30 transition-colors">
+            <div class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center text-primary mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="font-bold text-white mb-2">Verificação documental</h3>
+            <p class="text-sm text-gray-400">CPF, RG e atestado de antecedentes criminais. Aprovação manual antes de ativar o prestador.</p>
+          </article>
+          <article class="glass rounded-2xl p-6 hover:border-primary/30 transition-colors">
+            <div class="w-11 h-11 rounded-xl bg-gold/15 flex items-center justify-center text-gold-light mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+            </div>
+            <h3 class="font-bold text-white mb-2">Avaliação contínua</h3>
+            <p class="text-sm text-gray-400">Clientes avaliam após cada serviço concluído. Reputação visível na plataforma.</p>
+          </article>
+          <article class="glass rounded-2xl p-6 hover:border-primary/30 transition-colors">
+            <div class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center text-primary mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V7m0 10v1M4 6h16v12H4z"/></svg>
+            </div>
+            <h3 class="font-bold text-white mb-2">Preço transparente</h3>
+            <p class="text-sm text-gray-400">Valor calculado antes da confirmação (por hora) ou conforme orçamento — sem surpresas.</p>
+          </article>
+          <article class="glass rounded-2xl p-6 hover:border-primary/30 transition-colors">
+            <div class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center text-primary mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <h3 class="font-bold text-white mb-2">Suporte dedicado</h3>
+            <p class="text-sm text-gray-400">Equipe JVTechy e canal de suporte para acompanhar agendamentos e resolver imprevistos.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clientes vs Prestadores -->
+    <section class="py-16 sm:py-24 bg-dark-card/40">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid lg:grid-cols-2 gap-6">
+          <article id="clientes" class="glass gradient-border rounded-3xl p-8">
+            <span class="text-xs font-bold uppercase tracking-widest text-primary">Para Clientes</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white mt-2 mb-4">Para você e sua casa</h2>
+            <ul class="space-y-3 text-sm text-gray-400">
+              <li class="flex gap-2"><span class="text-primary shrink-0">✓</span> Catálogo de serviços com agendamento online</li>
+              <li class="flex gap-2"><span class="text-primary shrink-0">✓</span> Pagamento PIX com valor estimado antes de confirmar</li>
+              <li class="flex gap-2"><span class="text-primary shrink-0">✓</span> Chat em tempo real com o prestador</li>
+              <li class="flex gap-2"><span class="text-primary shrink-0">✓</span> Serviços por hora ou por orçamento</li>
+              <li class="flex gap-2"><span class="text-primary shrink-0">✓</span> Login tradicional ou via WhatsApp</li>
+            </ul>
+            <a data-app-link data-app-path="/" class="inline-flex mt-6 btn-primary text-white font-semibold px-5 py-2.5 rounded-xl text-sm">
+              Agendar meu serviço
+            </a>
+          </article>
+          <article id="prestadores" class="glass gradient-border rounded-3xl p-8 border-gold/20">
+            <span class="text-xs font-bold uppercase tracking-widest text-gold-light">Para Profissionais</span>
+            <h2 class="text-xl sm:text-2xl font-bold text-white mt-2 mb-4">Para prestadores de serviço</h2>
+            <ul class="space-y-3 text-sm text-gray-400">
+              <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Painel com serviços disponíveis e agenda</li>
+              <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Pagamento rastreado na plataforma</li>
+              <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Recebimento após conclusão do serviço</li>
+              <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Cadastro com validação de documentos</li>
+              <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Notificações push de mensagens e status</li>
+            </ul>
+            <a data-app-link data-app-path="/" data-app-params='{"auth":"register"}' class="inline-flex mt-6 btn-outline-gold text-gold-light font-semibold px-5 py-2.5 rounded-xl text-sm">
+              Quero me cadastrar
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PWA -->
+    <section id="pwa" class="py-16 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="glass gradient-border rounded-3xl p-8 sm:p-12 grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <p class="section-label text-primary text-xs font-bold uppercase mb-2">Tecnologia PWA</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">Abra, use e resolva — direto no navegador</h2>
+            <p class="mt-4 text-gray-400 leading-relaxed">
+              Sem App Store ou Play Store. Acesse pelo celular ou computador e, se quiser,
+              adicione à tela inicial como um app. Economiza memória e abre na hora.
+            </p>
+            <ul class="mt-6 space-y-2 text-sm text-gray-400">
+              <li>• Notificações push de chat e atualizações</li>
+              <li>• Experiência em tela cheia (standalone)</li>
+              <li>• Sempre atualizado — sem downloads manuais</li>
+            </ul>
+            <a data-app-link data-app-path="/" class="inline-flex mt-8 btn-primary text-white font-bold px-6 py-3 rounded-xl">
+              Abrir AgendaService agora
+            </a>
+          </div>
+          <div class="flex justify-center">
+            <div class="grid grid-cols-2 gap-4 max-w-sm">
+              <div class="glass rounded-2xl p-5 text-center">
+                <p class="text-3xl mb-2">📱</p>
+                <p class="text-xs font-semibold text-white">Celular</p>
+                <p class="text-[11px] text-gray-500 mt-1">Safari / Chrome</p>
+              </div>
+              <div class="glass rounded-2xl p-5 text-center">
+                <p class="text-3xl mb-2">💻</p>
+                <p class="text-xs font-semibold text-white">Desktop</p>
+                <p class="text-[11px] text-gray-500 mt-1">Qualquer navegador</p>
+              </div>
+              <div class="glass rounded-2xl p-5 text-center col-span-2">
+                <p class="text-3xl mb-2">🔔</p>
+                <p class="text-xs font-semibold text-white">Push Notifications</p>
+                <p class="text-[11px] text-gray-500 mt-1">Mensagens e status do agendamento</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Depoimentos -->
+    <section id="depoimentos" class="py-16 sm:py-24 bg-dark-card/40">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+          <div>
+            <p class="section-label text-primary text-xs font-bold uppercase mb-2">Depoimentos</p>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">O que dizem clientes e prestadores</h2>
+            <p class="text-xs text-gray-500 mt-2">Exemplos ilustrativos — substitua por avaliações reais conforme a base crescer.</p>
+          </div>
+          <div class="flex gap-2">
+            <button id="testimonial-prev" type="button" class="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-white/5" aria-label="Anterior">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button id="testimonial-next" type="button" class="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-white/5" aria-label="Próximo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="overflow-hidden">
+          <div id="testimonial-track" class="testimonial-track">
+            <div class="testimonial-slide"><div class="glass rounded-2xl p-6 h-full mx-1"><div class="flex gap-0.5 mb-3"><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm text-gray-300 leading-relaxed mb-4">"Agendei limpeza pelo celular, vi o valor antes de pagar e o profissional chegou pontual. Muito prático."</p><p class="text-sm font-semibold text-white">Cliente — São Paulo</p><p class="text-xs text-gray-500">Serviço doméstico</p></div></div>
+            <div class="testimonial-slide"><div class="glass rounded-2xl p-6 h-full mx-1"><div class="flex gap-0.5 mb-3"><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm text-gray-300 leading-relaxed mb-4">"Como prestador, gosto de ver os serviços disponíveis e acompanhar pagamentos no painel. Tudo organizado."</p><p class="text-sm font-semibold text-white">Prestador parceiro</p><p class="text-xs text-gray-500">Limpeza residencial</p></div></div>
+            <div class="testimonial-slide"><div class="glass rounded-2xl p-6 h-full mx-1"><div class="flex gap-0.5 mb-3"><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm text-gray-300 leading-relaxed mb-4">"O chat facilitou combinar detalhes antes da visita. Saber que o prestador passou por verificação me deu tranquilidade."</p><p class="text-sm font-semibold text-white">Cliente — região metropolitana</p><p class="text-xs text-gray-500">Jardinagem</p></div></div>
+            <div class="testimonial-slide"><div class="glass rounded-2xl p-6 h-full mx-1"><div class="flex gap-0.5 mb-3"><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="star-gold w-4 h-4" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm text-gray-300 leading-relaxed mb-4">"Uso direto no navegador, sem instalar nada da loja. Adicionei na tela inicial e funciona como app."</p><p class="text-sm font-semibold text-white">Usuária PWA</p><p class="text-xs text-gray-500">Agendamento recorrente</p></div></div>
+          </div>
+        </div>
+        <div id="testimonial-dots" class="flex justify-center gap-2 mt-6"></div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-16 sm:py-20">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-10">
+          <p class="section-label text-primary text-xs font-bold uppercase mb-2">FAQ</p>
+          <h2 class="text-2xl font-bold text-white">Perguntas frequentes</h2>
+        </div>
+        <div class="space-y-3">
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between p-4 text-left font-semibold text-white text-sm">
+              Preciso baixar aplicativo?
+              <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">Não. O AgendaService é um Web App (PWA). Acesse pelo navegador; opcionalmente, adicione à tela inicial.</p></div>
+          </div>
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between p-4 text-left font-semibold text-white text-sm">
+              Como sei que o prestador é confiável?
+              <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">Todo prestador envia documentos (CPF, RG, antecedentes) e só ativa após aprovação da equipe. Há também avaliações de clientes.</p></div>
+          </div>
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between p-4 text-left font-semibold text-white text-sm">
+              Como funciona o pagamento?
+              <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">O cliente paga via PIX no agendamento. Após a conclusão do serviço, libera o pagamento na plataforma. Serviços por orçamento seguem valor acordado.</p></div>
+          </div>
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between p-4 text-left font-semibold text-white text-sm">
+              Posso ser prestador parceiro?
+              <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">Sim. Cadastre-se no app, envie documentos e aguarde aprovação para começar a aceitar serviços.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lead form -->
+    <section id="leads" class="py-16 sm:py-24 bg-dark-card/40">
+      <div class="max-w-xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-8">
+          <p class="section-label text-primary text-xs font-bold uppercase mb-2">Novidades</p>
+          <h2 class="text-2xl font-bold text-white">Fique por dentro das novidades</h2>
+          <p class="mt-2 text-sm text-gray-400">Receba ofertas e atualizações no WhatsApp e e-mail.</p>
+        </div>
+        <form id="lead-form" class="glass gradient-border rounded-2xl p-6 sm:p-8 space-y-4" novalidate>
+          <div>
+            <label for="lead-nome" class="block text-sm font-medium text-gray-300 mb-1.5">Nome completo</label>
+            <input id="lead-nome" name="nome" type="text" required class="input-field w-full rounded-xl px-4 py-3 text-sm text-white" placeholder="Seu nome" />
+          </div>
+          <div>
+            <label for="lead-email" class="block text-sm font-medium text-gray-300 mb-1.5">E-mail</label>
+            <input id="lead-email" name="email" type="email" required class="input-field w-full rounded-xl px-4 py-3 text-sm text-white" placeholder="seu@email.com" />
+          </div>
+          <div>
+            <label for="lead-whatsapp" class="block text-sm font-medium text-gray-300 mb-1.5">WhatsApp</label>
+            <input id="lead-whatsapp" name="whatsapp" type="tel" required class="input-field w-full rounded-xl px-4 py-3 text-sm text-white" placeholder="(11) 99999-9999" />
+          </div>
+          <fieldset>
+            <legend class="block text-sm font-medium text-gray-300 mb-2">Tenho interesse em</legend>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                <input type="checkbox" name="perfil" value="Contratar serviços" class="rounded border-white/20 bg-black/30 text-primary focus:ring-primary" />
+                Quero contratar serviços
+              </label>
+              <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                <input type="checkbox" name="perfil" value="Prestar serviços" class="rounded border-white/20 bg-black/30 text-primary focus:ring-primary" />
+                Quero prestar serviços
+              </label>
+            </div>
+          </fieldset>
+          <button type="submit" class="w-full btn-primary text-white font-bold py-3.5 rounded-xl text-sm">
+            Quero receber novidades
+          </button>
+          <p class="text-[11px] text-gray-500 text-center">Ao enviar, você concorda em ser contactado sobre o AgendaService.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5 py-12 bg-black/40">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+        <div class="sm:col-span-2">
+          <img src="assets/logo.svg" alt="AgendaService" class="h-9 mb-4" />
+          <p class="text-sm text-gray-400 max-w-sm leading-relaxed">
+            Plataforma de agendamento de serviços domésticos com profissionais verificados.
+            Produto desenvolvido pela <strong class="text-gray-300">JVTechy</strong>.
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Navegação</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="#como-funciona" class="hover:text-primary">Como Funciona</a></li>
+            <li><a href="#seguranca" class="hover:text-primary">Segurança</a></li>
+            <li><a data-app-link data-app-path="/" class="hover:text-primary">Acessar Web App</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Legal</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li><a href="termos.html" class="hover:text-primary">Termos de Uso</a></li>
+            <li><a href="privacidade.html" class="hover:text-primary">Política de Privacidade</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+        <p>© <span id="year">2026</span> AgendaService · <a href="https://jvtechy.com.br" class="hover:text-primary" target="_blank" rel="noopener">JVTechy</a> — Todos os direitos reservados.</p>
+        <p class="flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path stroke-linecap="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Pagamento PIX · PWA · Profissionais verificados
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast fixed bottom-6 left-1/2 -translate-x-1/2 z-[70] px-5 py-3 rounded-xl text-white text-sm font-medium shadow-xl max-w-[90vw] text-center" role="status"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
