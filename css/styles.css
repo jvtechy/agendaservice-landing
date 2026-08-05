@@ -1,4 +1,4 @@
-/* AgendaService Landing — custom styles (Tailwind via CDN) */
+h/* AgendaService Landing — custom styles (Tailwind via CDN) */
 
 html {
   scroll-behavior: smooth;
@@ -79,6 +79,44 @@ body {
   letter-spacing: 0.2em;
 }
 
+#site-header .header-inner {
+  flex-wrap: nowrap;
+}
+
+#site-header nav.site-nav {
+  display: none;
+  flex-wrap: nowrap;
+  gap: 0.875rem;
+  font-size: 0.8125rem;
+  color: #d1d5db;
+}
+
+@media (min-width: 1280px) {
+  #site-header nav.site-nav {
+    display: flex;
+    gap: 1.125rem;
+    font-size: 0.875rem;
+  }
+}
+
+#site-header nav.site-nav a.site-nav-link {
+  white-space: nowrap !important;
+  flex-shrink: 0;
+  line-height: 1.25;
+}
+
+#site-header .header-cta {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+#site-header .header-logo {
+  flex-shrink: 0;
+}
+
+#site-header .header-actions {
+  flex-shrink: 0;
+}
 .phone-frame {
   background: linear-gradient(160deg, #2d2d2d 0%, #1a1a1a 100%);
   box-shadow:

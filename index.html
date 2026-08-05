@@ -34,34 +34,35 @@
 <body class="font-sans text-gray-100 antialiased overflow-x-hidden">
 
   <!-- Header -->
-  <header id="site-header" class="fixed top-0 inset-x-0 z-50 glass-strong transition-shadow">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-      <a href="#" class="flex items-center shrink-0" aria-label="AgendaService — início">
-        <img src="assets/logo.svg" alt="AgendaService" class="h-9 sm:h-10 w-auto" />
+  <!-- Header -->
+<header id="site-header" class="fixed top-0 inset-x-0 z-50 glass-strong transition-shadow">
+  <div class="header-inner w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 grid grid-cols-[auto_1fr_auto] items-center gap-4 xl:gap-12 2xl:gap-16">
+    <a href="#" class="header-logo flex items-center shrink-0 min-w-0" aria-label="AgendaService — início">
+      <img src="assets/logo.svg" alt="AgendaService" class="h-8 sm:h-9 lg:h-10 w-auto max-w-[min(100%,11rem)]" />
+    </a>
+
+    <nav class="site-nav hidden xl:flex flex-nowrap items-center justify-self-center shrink-0" aria-label="Principal">
+      <a href="#como-funciona" class="site-nav-link hover:text-primary transition-colors">Como Funciona</a>
+      <a href="#por-dentro" class="site-nav-link hover:text-primary transition-colors">Por Dentro</a>
+      <a href="#clientes" class="site-nav-link hover:text-primary transition-colors">Para Clientes</a>
+      <a href="#prestadores" class="site-nav-link hover:text-primary transition-colors">Para Profissionais</a>
+      <a href="#seguranca" class="site-nav-link hover:text-primary transition-colors">Segurança</a>
+      <a href="#depoimentos" class="site-nav-link hover:text-primary transition-colors">Depoimentos</a>
+    </nav>
+
+    <div class="header-actions flex flex-nowrap items-center gap-2 shrink-0">
+      <a data-app-link data-app-path="/" class="header-cta hidden sm:inline-flex btn-primary text-white text-sm font-semibold px-3 lg:px-4 py-2.5 rounded-xl">
+        <span class="hidden 2xl:inline">Acessar </span>Web App
       </a>
-
-      <nav class="hidden lg:flex items-center gap-7 text-sm text-gray-300" aria-label="Principal">
-        <a href="#como-funciona" class="hover:text-primary transition-colors">Como Funciona</a>
-        <a href="#por-dentro" class="hover:text-primary transition-colors">Por Dentro</a>
-        <a href="#clientes" class="hover:text-primary transition-colors">Para Clientes</a>
-        <a href="#prestadores" class="hover:text-primary transition-colors">Para Profissionais</a>
-        <a href="#seguranca" class="hover:text-primary transition-colors">Segurança</a>
-        <a href="#depoimentos" class="hover:text-primary transition-colors">Depoimentos</a>
-      </nav>
-
-      <div class="flex items-center gap-2">
-        <a data-app-link data-app-path="/" class="hidden sm:inline-flex btn-primary text-white text-sm font-semibold px-4 py-2.5 rounded-xl">
-          Acessar Web App
-        </a>
-        <button id="menu-btn" type="button" class="lg:hidden p-2 rounded-lg text-gray-300 hover:bg-white/5" aria-label="Abrir menu">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-      </div>
+      <button id="menu-btn" type="button" class="xl:hidden p-2 rounded-lg text-gray-300 hover:bg-white/5 shrink-0" aria-label="Abrir menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
     </div>
-  </header>
+  </div>
+</header>
 
   <!-- Mobile nav -->
-  <div id="mobile-nav" class="fixed inset-0 z-[60] lg:hidden" aria-hidden="true">
+  <div id="mobile-nav" class="fixed inset-0 z-[60] xl:hidden" aria-hidden="true">
     <div class="absolute inset-0 bg-black/60 opacity-0 transition-opacity" id="mobile-backdrop"></div>
     <aside class="absolute top-0 right-0 h-full w-[min(100%,320px)] glass-strong translate-x-full transition-transform duration-300 flex flex-col p-6">
       <div class="flex justify-between items-center mb-8">
@@ -71,13 +72,13 @@
         </button>
       </div>
       <nav class="flex flex-col gap-4 text-lg">
-        <a href="#como-funciona" class="hover:text-primary">Como Funciona</a>
-        <a href="#por-dentro" class="hover:text-primary">Por Dentro</a>
-        <a href="#clientes" class="hover:text-primary">Para Clientes</a>
-        <a href="#prestadores" class="hover:text-primary">Para Profissionais</a>
-        <a href="#seguranca" class="hover:text-primary">Segurança</a>
-        <a href="#depoimentos" class="hover:text-primary">Depoimentos</a>
-        <a href="#leads" class="hover:text-primary">Novidades</a>
+        <a href="#como-funciona" class="site-nav-link hover:text-primary">Como Funciona</a>
+        <a href="#por-dentro" class="site-nav-link hover:text-primary">Por Dentro</a>
+        <a href="#clientes" class="site-nav-link hover:text-primary">Para Clientes</a>
+        <a href="#prestadores" class="site-nav-link hover:text-primary">Para Profissionais</a>
+        <a href="#seguranca" class="site-nav-link hover:text-primary">Segurança</a>
+        <a href="#depoimentos" class="site-nav-link hover:text-primary">Depoimentos</a>
+        <a href="#leads" class="site-nav-link hover:text-primary">Novidades</a>
       </nav>
       <a data-app-link data-app-path="/" class="mt-8 btn-primary text-center text-white font-semibold py-3 rounded-xl">
         Acessar Web App
@@ -496,22 +497,22 @@
         <div>
           <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Navegação</p>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="#por-dentro" class="hover:text-primary">Por Dentro</a></li>
-            <li><a href="#como-funciona" class="hover:text-primary">Como Funciona</a></li>
-            <li><a href="#seguranca" class="hover:text-primary">Segurança</a></li>
-            <li><a data-app-link data-app-path="/" class="hover:text-primary">Acessar Web App</a></li>
+            <li><a href="#por-dentro" class="site-nav-link hover:text-primary">Por Dentro</a></li>
+            <li><a href="#como-funciona" class="site-nav-link hover:text-primary">Como Funciona</a></li>
+            <li><a href="#seguranca" class="site-nav-link hover:text-primary">Segurança</a></li>
+            <li><a data-app-link data-app-path="/" class="site-nav-link hover:text-primary">Acessar Web App</a></li>
           </ul>
         </div>
         <div>
           <p class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Legal</p>
           <ul class="space-y-2 text-sm text-gray-400">
-            <li><a href="termos.html" class="hover:text-primary">Termos de Uso</a></li>
-            <li><a href="privacidade.html" class="hover:text-primary">Política de Privacidade</a></li>
+            <li><a href="termos.html" class="site-nav-link hover:text-primary">Termos de Uso</a></li>
+            <li><a href="privacidade.html" class="site-nav-link hover:text-primary">Política de Privacidade</a></li>
           </ul>
         </div>
       </div>
       <div class="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-        <p>© <span id="year">2026</span> AgendaService · <a href="https://jvtechy.com.br" class="hover:text-primary" target="_blank" rel="noopener">JVTechy</a> — Todos os direitos reservados.</p>
+        <p>© <span id="year">2026</span> AgendaService · <a href="https://jvtechy.com.br" class="site-nav-link hover:text-primary" target="_blank" rel="noopener">JVTechy</a> — Todos os direitos reservados.</p>
         <p class="flex items-center gap-1.5">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path stroke-linecap="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Pagamento PIX · PWA · Profissionais verificados
