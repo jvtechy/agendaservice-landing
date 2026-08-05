@@ -66,3 +66,4 @@ SVG em `assets/logo.svg` — verde `#10B981`, detalhe dourado `#FBBF24`, fundo e
 © JVTechy — [AgendaService](https://github.com/jvtechy/agendaservice)
 
 > Linha de teste — atualização automática do README.
+> Linha de teste 2 — commit e push na main.
