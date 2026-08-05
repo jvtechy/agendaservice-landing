@@ -123,27 +123,19 @@
 
           <!-- Phone mockup -->
           <div class="relative flex justify-center lg:justify-end reveal reveal-delay-2">
-            <div class="phone-frame w-[260px] sm:w-[280px] rounded-[2.5rem] p-3 animate-float">
-              <div class="phone-notch w-24 h-5 mx-auto rounded-b-xl mb-2"></div>
-              <div class="mock-screen rounded-[1.75rem] overflow-hidden aspect-[9/18] p-4 flex flex-col">
-                <div class="flex items-center justify-between mb-4">
-                  <img src="assets/logo-icon.svg" alt="" class="w-8 h-8 rounded-lg" />
-                  <span class="text-[10px] text-gray-500 font-medium">Web App</span>
-                </div>
-                <p class="text-xs font-bold text-white mb-1">Limpeza Residencial</p>
-                <p class="text-[10px] text-gray-500 mb-3">Plano 4h • Profissional verificado</p>
-                <div class="glass rounded-xl p-3 mb-2 flex-1">
-                  <p class="text-[10px] text-gray-400 mb-1">Valor estimado</p>
-                  <p class="text-lg font-bold text-primary">R$ 722,00</p>
-                  <p class="text-[9px] text-gray-500 mt-2">PIX • Chat ativo • PWA</p>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <div class="bg-dark-muted/80 rounded-lg h-8"></div>
-                  <div class="bg-primary/20 border border-primary/30 rounded-lg h-8 flex items-center justify-center text-[10px] text-primary font-semibold">Agendar</div>
-                </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5 animate-float">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/CLIENTE_MEUS_AGENDAMENTOS.PNG"
+                  alt="AgendaService — Meus Agendamentos no app do cliente"
+                  class="w-full h-full object-cover object-top"
+                  width="390"
+                  height="844"
+                />
               </div>
             </div>
-            <div class="absolute -z-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="absolute -z-10 w-80 h-80 bg-primary/20 rounded-full blur-3xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
           </div>
         </div>
       </div>
@@ -193,133 +185,141 @@
           </p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
-          <article class="screenshot-card gradient-border rounded-2xl overflow-hidden glass">
-            <div class="px-5 pt-5 pb-3 flex items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Cliente</span>
-                <h3 class="text-lg font-bold text-white mt-1">Serviços Concluídos</h3>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-10 justify-items-center">
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px]">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Cliente</span>
+              <h3 class="text-lg font-bold text-white mt-1">Meus Agendamentos</h3>
+            </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/CLIENTE_MEUS_AGENDAMENTOS.PNG"
+                  alt="Painel do cliente AgendaService — meus agendamentos"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
               </div>
-              <span class="text-[10px] text-gray-500 shrink-0">Dados anonimizados</span>
             </div>
-            <div class="screenshot-frame px-3 pb-4">
-              <img
-                src="assets/screenshot-cliente.png"
-                alt="Painel do cliente AgendaService — histórico de serviços concluídos, avaliações e pagamentos"
-                class="w-full rounded-xl border border-white/10 shadow-2xl shadow-black/50"
-                loading="lazy"
-                width="869"
-                height="725"
-              />
+            <p class="mt-4 text-sm text-gray-400">
+              Acompanhe seus agendamentos, status do serviço e próximos horários em um só lugar.
+            </p>
+          </article>
+
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px]">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Cliente</span>
+              <h3 class="text-lg font-bold text-white mt-1">Serviços Concluídos</h3>
             </div>
-            <p class="px-5 pb-5 text-sm text-gray-400">
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/CLIENTE_SERVIÇOS_CONCLUIDOS.PNG"
+                  alt="Painel do cliente AgendaService — serviços concluídos, avaliações e pagamentos"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-400">
               Acompanhe serviços finalizados, avalie o prestador e libere o pagamento com transparência.
             </p>
           </article>
 
-          <article class="screenshot-card gradient-border rounded-2xl overflow-hidden glass">
-            <div class="px-5 pt-5 pb-3 flex items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
-                <h3 class="text-lg font-bold text-white mt-1">Meus Serviços</h3>
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px]">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
+              <h3 class="text-lg font-bold text-white mt-1">Calendário de Serviços</h3>
+            </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG"
+                  alt="Painel do prestador AgendaService — calendário de serviços agendados"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
               </div>
-              <span class="text-[10px] text-gray-500 shrink-0">Dados anonimizados</span>
             </div>
-            <div class="screenshot-frame px-3 pb-4">
-              <img
-                src="assets/screenshot-prestador.png"
-                alt="Painel do prestador AgendaService — serviços aceitos, valores e chat com cliente"
-                class="w-full rounded-xl border border-white/10 shadow-2xl shadow-black/50"
-                loading="lazy"
-                width="872"
-                height="725"
-              />
-            </div>
-            <p class="px-5 pb-5 text-sm text-gray-400">
-              Veja serviços aceitos, valor a receber, chat integrado e conclusão em um só painel.
-            </p>
-          </article>
-
-          <article class="screenshot-card gradient-border rounded-2xl overflow-hidden glass">
-            <div class="px-5 pt-5 pb-3 flex items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
-                <h3 class="text-lg font-bold text-white mt-1">Calendário de Serviços</h3>
-              </div>
-              <span class="text-[10px] text-gray-500 shrink-0">Dados anonimizados</span>
-            </div>
-            <div class="screenshot-frame px-3 pb-4">
-              <img
-                src="assets/PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG"
-                alt="Painel do prestador AgendaService — calendário de serviços agendados"
-                class="w-full rounded-xl border border-white/10 shadow-2xl shadow-black/50"
-                loading="lazy"
-              />
-            </div>
-            <p class="px-5 pb-5 text-sm text-gray-400">
+            <p class="mt-4 text-sm text-gray-400">
               Organize a agenda do dia e da semana com visão clara dos serviços confirmados.
             </p>
           </article>
 
-          <article class="screenshot-card gradient-border rounded-2xl overflow-hidden glass">
-            <div class="px-5 pt-5 pb-3 flex items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
-                <h3 class="text-lg font-bold text-white mt-1">Serviços Disponíveis</h3>
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px]">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
+              <h3 class="text-lg font-bold text-white mt-1">Serviços Disponíveis</h3>
+            </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG"
+                  alt="Painel do prestador AgendaService — lista de serviços disponíveis para aceitar"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
               </div>
-              <span class="text-[10px] text-gray-500 shrink-0">Dados anonimizados</span>
             </div>
-            <div class="screenshot-frame px-3 pb-4">
-              <img
-                src="assets/PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG"
-                alt="Painel do prestador AgendaService — lista de serviços disponíveis para aceitar"
-                class="w-full rounded-xl border border-white/10 shadow-2xl shadow-black/50"
-                loading="lazy"
-              />
-            </div>
-            <p class="px-5 pb-5 text-sm text-gray-400">
+            <p class="mt-4 text-sm text-gray-400">
               Encontre novas oportunidades na região e aceite o serviço com poucos toques.
             </p>
           </article>
 
-          <article class="screenshot-card gradient-border rounded-2xl overflow-hidden glass">
-            <div class="px-5 pt-5 pb-3 flex items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
-                <h3 class="text-lg font-bold text-white mt-1">Meus Ganhos</h3>
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px]">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
+              <h3 class="text-lg font-bold text-white mt-1">Meus Ganhos</h3>
+            </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/PRESTADOR_MEUS_GANHOS.png"
+                  alt="Painel do prestador AgendaService — resumo de ganhos e valores recebidos"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
               </div>
-              <span class="text-[10px] text-gray-500 shrink-0">Dados anonimizados</span>
             </div>
-            <div class="screenshot-frame px-3 pb-4">
-              <img
-                src="assets/PRESTADOR_MEUS_GANHOS.png"
-                alt="Painel do prestador AgendaService — resumo de ganhos e valores recebidos"
-                class="w-full rounded-xl border border-white/10 shadow-2xl shadow-black/50"
-                loading="lazy"
-              />
-            </div>
-            <p class="px-5 pb-5 text-sm text-gray-400">
+            <p class="mt-4 text-sm text-gray-400">
               Acompanhe valores a receber, histórico de pagamentos e evolução dos ganhos.
             </p>
           </article>
 
-          <article class="screenshot-card gradient-border rounded-2xl overflow-hidden glass">
-            <div class="px-5 pt-5 pb-3 flex items-center justify-between gap-3">
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
-                <h3 class="text-lg font-bold text-white mt-1">Meus Serviços — Mapa</h3>
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px]">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-gold-light">Prestador</span>
+              <h3 class="text-lg font-bold text-white mt-1">Meus Serviços — Mapa</h3>
+            </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="assets/PRESTADOR_MEUS_SERVICOS-MAPA.PNG"
+                  alt="Painel do prestador AgendaService — mapa com localização dos serviços"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
               </div>
-              <span class="text-[10px] text-gray-500 shrink-0">Dados anonimizados</span>
             </div>
-            <div class="screenshot-frame px-3 pb-4">
-              <img
-                src="assets/PRESTADOR_MEUS_SERVICOS-MAPA.PNG"
-                alt="Painel do prestador AgendaService — mapa com localização dos serviços"
-                class="w-full rounded-xl border border-white/10 shadow-2xl shadow-black/50"
-                loading="lazy"
-              />
-            </div>
-            <p class="px-5 pb-5 text-sm text-gray-400">
+            <p class="mt-4 text-sm text-gray-400">
               Visualize no mapa onde estão os serviços e planeje o deslocamento com mais eficiência.
             </p>
           </article>
