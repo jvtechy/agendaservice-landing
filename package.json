@@ -5,6 +5,7 @@
   "description": "Landing page pública do AgendaService (JVTechy)",
   "scripts": {
     "dev": "npx --yes serve . -p 4321",
-    "preview": "npx --yes serve . -p 4321"
+    "preview": "npx --yes serve . -p 4321",
+    "screenshots:anonymize": "node scripts/anonymize-screenshots.mjs"
   }
 }

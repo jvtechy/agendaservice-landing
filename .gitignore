@@ -4,3 +4,7 @@ node_modules/
 *.log
 .env
 .env.local
+
+# Originais com dados sensíveis — manter só localmente
+iamagem_cliente.png
+iamagem_prestador.png

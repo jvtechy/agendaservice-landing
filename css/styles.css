@@ -210,6 +210,10 @@ body {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.toast.show {
-  transform: translateY(0);
+.screenshot-card img {
+  display: block;
+}
+
+.screenshot-frame {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, transparent 100%);
 }
