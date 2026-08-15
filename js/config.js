@@ -20,7 +20,7 @@ window.AGENDASERVICE_CONFIG = {
     statusLabel: 'Trial',
     descricao: 'Comece sem pagar assinatura e teste a plataforma antes de escolher um plano anual.',
     trial_dias: 7,
-    trial_aceites: 1,
+    trial_aceites: 2,
     taxa_job: 15,
   },
   /**

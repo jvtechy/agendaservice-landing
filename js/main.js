@@ -211,7 +211,7 @@
 
   function renderTrialBanner() {
     const trial = cfg.trialAssinatura || {};
-    const aceites = Number(trial.trial_aceites != null ? trial.trial_aceites : 1);
+    const aceites = Number(trial.trial_aceites != null ? trial.trial_aceites : 2);
     const dias = Number(trial.trial_dias != null ? trial.trial_dias : 7);
     const taxa = Number(trial.taxa_job != null ? trial.taxa_job : 15);
 
