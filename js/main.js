@@ -208,4 +208,199 @@
 
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  /* —— Planos de assinatura (prestadores) —— */
+  const PLAN_FEATURES = {
+    basico: [
+      'Até {limite} serviços aceitos por mês',
+      'Taxa de plataforma padrão',
+      'Agenda e painel de ganhos',
+      'Chat e notificações push',
+      'Listagem padrão nos serviços disponíveis',
+    ],
+    profissional: [
+      'Até {limite} serviços aceitos por mês',
+      'Taxa de plataforma reduzida',
+      'Destaque na listagem de serviços',
+      'Mapa e estatísticas de ganhos',
+      'Agenda, chat e push incluídos',
+    ],
+    parceiro: [
+      'Aceites ilimitados de serviços',
+      'Menor taxa de plataforma',
+      'Prioridade na fila de oportunidades',
+      'Selo Parceiro verificado',
+      'Suporte prioritário da equipe',
+    ],
+  };
+
+  function formatBRL(value) {
+    return Number(value || 0).toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+  }
+
+  function normalizePlan(raw) {
+    const codigo = String(raw.codigo || raw.nome || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '_');
+    return {
+      codigo,
+      nome: raw.nome || 'Plano',
+      descricao: raw.descricao || '',
+      preco_anual: raw.preco_anual == null ? null : Number(raw.preco_anual),
+      limite_aceites: raw.limite_aceites == null || raw.limite_aceites === '' ? null : Number(raw.limite_aceites),
+      ordem: Number(raw.ordem || 0),
+      status: raw.status,
+    };
+  }
+
+  function planFeatures(plan) {
+    const key = Object.keys(PLAN_FEATURES).find((k) => plan.codigo.includes(k)) || 'basico';
+    const limiteLabel =
+      plan.limite_aceites == null || Number.isNaN(plan.limite_aceites) || plan.limite_aceites <= 0
+        ? 'ilimitados'
+        : String(plan.limite_aceites);
+    return PLAN_FEATURES[key].map((line) => line.replace('{limite}', limiteLabel));
+  }
+
+  function isFeaturedPlan(plan) {
+    return plan.codigo.includes('profissional');
+  }
+
+  function planPriceHtml(plan) {
+    const anual = plan.preco_anual;
+    if (anual == null || Number.isNaN(anual) || anual <= 0) {
+      return `
+        <div class="plan-price">
+          <span class="plan-price-main">Grátis</span>
+          <span class="plan-price-sub">sem mensalidade</span>
+        </div>`;
+    }
+    const mensal = anual / 12;
+    return `
+      <div class="plan-price">
+        <span class="plan-price-main">${formatBRL(mensal)}</span>
+        <span class="plan-price-period">/mês</span>
+        <span class="plan-price-sub">ou ${formatBRL(anual)} / ano</span>
+      </div>`;
+  }
+
+  function bindPlanLinks(root) {
+    root.querySelectorAll('[data-app-link]').forEach((el) => {
+      const path = el.getAttribute('data-app-path') || '/';
+      const paramsRaw = el.getAttribute('data-app-params');
+      let params = null;
+      if (paramsRaw) {
+        try {
+          params = JSON.parse(paramsRaw);
+        } catch {
+          params = null;
+        }
+      }
+      el.setAttribute('href', appLink(path, params));
+      if (el.tagName === 'A') {
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener noreferrer');
+      }
+    });
+  }
+
+  function renderPlans(plans) {
+    const grid = document.getElementById('planos-grid');
+    if (!grid) return;
+
+    const sorted = [...plans]
+      .map(normalizePlan)
+      .filter((p) => p.status == null || Number(p.status) === 1)
+      .sort((a, b) => a.ordem - b.ordem);
+
+    if (!sorted.length) {
+      grid.innerHTML =
+        '<p class="text-center text-sm text-gray-500 col-span-full">Planos em breve. Cadastre-se no app para ser avisado.</p>';
+      return;
+    }
+
+    grid.innerHTML = sorted
+      .map((plan) => {
+        const featured = isFeaturedPlan(plan);
+        const features = planFeatures(plan);
+        const ctaLabel =
+          plan.preco_anual != null && plan.preco_anual > 0
+            ? `Assinar ${plan.nome}`
+            : 'Começar grátis';
+        const params = JSON.stringify({ auth: 'register', plan: plan.codigo });
+        return `
+          <article class="plan-card glass gradient-border rounded-3xl p-6 sm:p-8 flex flex-col ${
+            featured ? 'plan-card--featured' : ''
+          }" data-plan-codigo="${plan.codigo}">
+            ${
+              featured
+                ? '<span class="plan-badge">Mais popular</span>'
+                : ''
+            }
+            <p class="text-xs font-bold uppercase tracking-widest ${
+              featured ? 'text-gold-light' : 'text-primary'
+            }">Assinatura</p>
+            <h3 class="text-xl font-bold text-white mt-1">${plan.nome}</h3>
+            ${planPriceHtml(plan)}
+            <p class="mt-3 text-sm text-gray-400 leading-relaxed">${plan.descricao || ''}</p>
+            <ul class="mt-6 space-y-2.5 text-sm text-gray-300 flex-1">
+              ${features
+                .map(
+                  (f) =>
+                    `<li class="flex gap-2"><span class="${
+                      featured ? 'text-gold-light' : 'text-primary'
+                    } shrink-0">✓</span><span>${f}</span></li>`
+                )
+                .join('')}
+            </ul>
+            <a data-app-link data-app-path="/" data-app-params='${params}'
+              class="mt-8 inline-flex items-center justify-center w-full font-semibold px-5 py-3 rounded-xl text-sm ${
+                featured
+                  ? 'btn-primary text-white'
+                  : 'btn-outline-gold text-gold-light'
+              }">${ctaLabel}</a>
+          </article>`;
+      })
+      .join('');
+
+    bindPlanLinks(grid);
+  }
+
+  async function loadPlanosAssinatura() {
+    const fallback = Array.isArray(cfg.planosAssinaturaFallback)
+      ? cfg.planosAssinaturaFallback
+      : [];
+    const url = (cfg.supabaseUrl || '').replace(/\/$/, '');
+    const key = cfg.supabaseAnonKey;
+
+    if (!url || !key) {
+      renderPlans(fallback);
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${url}/rest/v1/planos_assinatura?select=id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem&status=eq.1&order=ordem.asc`,
+        {
+          headers: {
+            apikey: key,
+            Authorization: `Bearer ${key}`,
+            Accept: 'application/json',
+          },
+        }
+      );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = await res.json();
+      renderPlans(Array.isArray(rows) && rows.length ? rows : fallback);
+    } catch {
+      renderPlans(fallback);
+    }
+  }
+
+  loadPlanosAssinatura();
 })();

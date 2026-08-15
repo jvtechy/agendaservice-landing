@@ -46,6 +46,7 @@
       <a href="#por-dentro" class="site-nav-link hover:text-primary transition-colors">Por Dentro</a>
       <a href="#clientes" class="site-nav-link hover:text-primary transition-colors">Para Clientes</a>
       <a href="#prestadores" class="site-nav-link hover:text-primary transition-colors">Para Profissionais</a>
+      <a href="#planos" class="site-nav-link hover:text-primary transition-colors">Planos</a>
       <a href="#seguranca" class="site-nav-link hover:text-primary transition-colors">Segurança</a>
       <a href="#depoimentos" class="site-nav-link hover:text-primary transition-colors">Depoimentos</a>
     </nav>
@@ -76,6 +77,7 @@
         <a href="#por-dentro" class="site-nav-link hover:text-primary">Por Dentro</a>
         <a href="#clientes" class="site-nav-link hover:text-primary">Para Clientes</a>
         <a href="#prestadores" class="site-nav-link hover:text-primary">Para Profissionais</a>
+        <a href="#planos" class="site-nav-link hover:text-primary">Planos</a>
         <a href="#seguranca" class="site-nav-link hover:text-primary">Segurança</a>
         <a href="#depoimentos" class="site-nav-link hover:text-primary">Depoimentos</a>
         <a href="#leads" class="site-nav-link hover:text-primary">Novidades</a>
@@ -110,7 +112,7 @@
                 Solicitar Serviço Agora
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
               </a>
-              <a data-app-link data-app-path="/" data-app-params='{"auth":"register"}' class="btn-outline-gold inline-flex items-center justify-center gap-2 text-gold-light font-semibold px-6 py-3.5 rounded-xl text-sm sm:text-base">
+              <a href="#planos" class="btn-outline-gold inline-flex items-center justify-center gap-2 text-gold-light font-semibold px-6 py-3.5 rounded-xl text-sm sm:text-base">
                 Quero ser Prestador Parceiro
               </a>
             </div>
@@ -405,14 +407,36 @@
               <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Painel com serviços disponíveis e agenda</li>
               <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Pagamento rastreado na plataforma</li>
               <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Recebimento após conclusão do serviço</li>
+              <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Planos de assinatura com limites e benefícios</li>
               <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Cadastro com validação de documentos</li>
               <li class="flex gap-2"><span class="text-gold-light shrink-0">✓</span> Notificações push de mensagens e status</li>
             </ul>
-            <a data-app-link data-app-path="/" data-app-params='{"auth":"register"}' class="inline-flex mt-6 btn-outline-gold text-gold-light font-semibold px-5 py-2.5 rounded-xl text-sm">
-              Quero me cadastrar
+            <a href="#planos" class="inline-flex mt-6 btn-outline-gold text-gold-light font-semibold px-5 py-2.5 rounded-xl text-sm">
+              Ver planos de assinatura
             </a>
           </article>
         </div>
+      </div>
+    </section>
+
+    <!-- Planos de assinatura (prestadores) -->
+    <section id="planos" class="py-16 sm:py-24 relative overflow-hidden">
+      <div class="pointer-events-none absolute inset-0 planos-glow" aria-hidden="true"></div>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 relative">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <p class="section-label text-gold-light text-xs font-bold uppercase mb-2">Para prestadores</p>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white">Planos de assinatura</h2>
+          <p class="mt-3 text-sm sm:text-base text-gray-400 leading-relaxed">
+            Escolha o plano que combina com o seu ritmo de atendimento.
+            Assine no Web App após o cadastro e a aprovação documental.
+          </p>
+        </div>
+        <div id="planos-grid" class="grid md:grid-cols-3 gap-5 lg:gap-6 items-stretch" aria-live="polite">
+          <p class="text-center text-sm text-gray-500 md:col-span-3 py-8">Carregando planos…</p>
+        </div>
+        <p class="mt-8 text-center text-xs text-gray-500 max-w-xl mx-auto">
+          O pagamento do serviço pelo cliente continua via PIX. A assinatura é a mensalidade do prestador para usar a plataforma com os benefícios do plano escolhido.
+        </p>
       </div>
     </section>
 
@@ -530,7 +554,14 @@
               Posso ser prestador parceiro?
               <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">Sim. Cadastre-se no app, envie documentos e aguarde aprovação para começar a aceitar serviços.</p></div>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">Sim. Cadastre-se no app, envie documentos e aguarde aprovação. Depois escolha um plano de assinatura (Básico, Profissional ou Parceiro) para aceitar serviços conforme os limites do plano.</p></div>
+          </div>
+          <div class="faq-item glass rounded-xl overflow-hidden">
+            <button type="button" class="faq-trigger w-full flex items-center justify-between p-4 text-left font-semibold text-white text-sm">
+              Como funcionam os planos de assinatura?
+              <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">São planos anuais para prestadores (com equivalente mensal na vitrine). Cada plano define limite de aceites e benefícios como destaque, taxa e prioridade. O cliente continua pagando o serviço via PIX; a assinatura é a mensalidade do prestador na plataforma.</p></div>
           </div>
         </div>
       </div>
@@ -596,6 +627,7 @@
           <ul class="space-y-2 text-sm text-gray-400">
             <li><a href="#por-dentro" class="site-nav-link hover:text-primary">Por Dentro</a></li>
             <li><a href="#como-funciona" class="site-nav-link hover:text-primary">Como Funciona</a></li>
+            <li><a href="#planos" class="site-nav-link hover:text-primary">Planos</a></li>
             <li><a href="#seguranca" class="site-nav-link hover:text-primary">Segurança</a></li>
             <li><a data-app-link data-app-path="/" class="site-nav-link hover:text-primary">Acessar Web App</a></li>
           </ul>

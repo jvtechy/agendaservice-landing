@@ -57,6 +57,14 @@ Todos os botões com `data-app-link` redirecionam para `config.appUrl`. Parâmet
 - Senão: `mailto:` para `emailContato`.
 - Para integração avançada (Supabase/Formspree), substitua o handler em `js/main.js`.
 
+## Planos de assinatura
+
+A seção `#planos` carrega `planos_assinatura` do Supabase (mesma base do Web App).
+Se a tabela estiver vazia ou indisponível, usa `planosAssinaturaFallback` em `js/config.js`
+(Básico / Profissional / Parceiro — alinhado ao schema do app).
+
+CTAs abrem o Web App com `?auth=register&plan=<codigo>`.
+
 ## Logo
 
 SVG em `assets/logo.svg` — verde `#10B981`, detalhe dourado `#FBBF24`, fundo escuro.
