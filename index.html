@@ -430,11 +430,39 @@
             Planos anuais para operar no marketplace. Checkout Asaas em breve.
           </p>
         </div>
+
+        <aside id="planos-trial" class="trial-card glass gradient-border rounded-3xl p-5 sm:p-6 mb-8 max-w-3xl mx-auto" aria-label="Plano Trial">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="trial-status-icon" aria-hidden="true">✓</span>
+                <p class="text-sm font-bold text-white">
+                  Trial — <span class="text-primary">trial</span>
+                </p>
+              </div>
+              <p class="text-sm text-gray-300 leading-relaxed" id="planos-trial-resumo">
+                Restam <strong class="text-white" data-trial-aceites>1</strong> aceite(s) e
+                <strong class="text-white" data-trial-dias>7</strong> dia(s) de trial.
+              </p>
+              <p class="text-xs text-primary font-semibold mt-2" id="planos-trial-taxa">
+                Taxa atual por job: 15%
+              </p>
+              <p class="text-xs text-gray-500 mt-2">
+                Status inicial no app após aprovação. Sem cobrança de assinatura até você escolher um plano anual.
+              </p>
+            </div>
+            <a data-app-link data-app-path="/" data-app-params='{"auth":"register","plan":"trial"}'
+              class="shrink-0 inline-flex items-center justify-center btn-outline-gold text-gold-light font-semibold px-5 py-3 rounded-xl text-sm whitespace-nowrap">
+              Começar no Trial
+            </a>
+          </div>
+        </aside>
+
         <div id="planos-grid" class="grid md:grid-cols-3 gap-5 lg:gap-6 items-stretch" aria-live="polite">
           <p class="text-center text-sm text-gray-500 md:col-span-3 py-8">Carregando planos…</p>
         </div>
         <p class="mt-8 text-center text-xs text-gray-500 max-w-xl mx-auto">
-          O cliente paga o serviço via PIX. A assinatura anual define a taxa por job do prestador (15%, 5% ou 0%) e libera aceites ilimitados.
+          O Trial não é um plano pago: é o período inicial no Web App. Depois você assina Essencial, Profissional ou Premium (taxas 15%, 5% ou 0% por job).
         </p>
       </div>
     </section>
@@ -560,7 +588,7 @@
               Como funcionam os planos de assinatura?
               <svg class="faq-chevron w-5 h-5 text-gray-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">São planos anuais para prestadores: Essencial (taxa 15%), Profissional (5%) e Premium (0% por job), com aceites ilimitados. O cliente continua pagando o serviço via PIX. O checkout Asaas está em breve no Web App.</p></div>
+            <div class="faq-panel px-4 pb-4"><p class="text-sm text-gray-400">São planos anuais para prestadores: Essencial (taxa 15%), Profissional (5%) e Premium (0% por job), com aceites ilimitados. Todo prestador começa no <strong class="text-gray-300">Trial</strong> (período inicial sem assinatura paga). O cliente continua pagando o serviço via PIX. O checkout Asaas está em breve no Web App.</p></div>
           </div>
         </div>
       </div>

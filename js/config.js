@@ -12,6 +12,18 @@ window.AGENDASERVICE_CONFIG = {
   supabaseAnonKey:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5Z3pwanVkanNic2R0cmh3YXlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NTI4NzQsImV4cCI6MjA4NTUyODg3NH0.69ncwkiLIF7DmY69pKgKh9nDcKwVIlJ_N0PoaAgbaqk',
   /**
+   * Trial = status inicial do prestador no app (Minha Assinatura), não um plano anual.
+   * Aparece como faixa acima dos 3 planos pagos.
+   */
+  trialAssinatura: {
+    nome: 'Trial',
+    statusLabel: 'Trial',
+    descricao: 'Comece sem pagar assinatura e teste a plataforma antes de escolher um plano anual.',
+    trial_dias: 7,
+    trial_aceites: 1,
+    taxa_job: 15,
+  },
+  /**
    * Fallback alinhado à tela "Minha Assinatura" do app (versão Dev).
    * preco_anual em reais; taxa_job em %; limite_aceites null = ilimitado.
    * Quando planos_assinatura tiver linhas ativas, a landing usa o Supabase.

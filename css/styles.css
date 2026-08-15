@@ -250,6 +250,24 @@ body {
   line-height: 1.35;
 }
 
+.trial-card {
+  border-color: rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.trial-status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0f0f0f;
+  background: #10b981;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

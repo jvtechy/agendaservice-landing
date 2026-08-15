@@ -209,6 +209,25 @@
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
+  function renderTrialBanner() {
+    const trial = cfg.trialAssinatura || {};
+    const aceites = Number(trial.trial_aceites != null ? trial.trial_aceites : 1);
+    const dias = Number(trial.trial_dias != null ? trial.trial_dias : 7);
+    const taxa = Number(trial.taxa_job != null ? trial.taxa_job : 15);
+
+    document.querySelectorAll('[data-trial-aceites]').forEach((el) => {
+      el.textContent = String(aceites);
+    });
+    document.querySelectorAll('[data-trial-dias]').forEach((el) => {
+      el.textContent = String(dias);
+    });
+    const taxaEl = document.getElementById('planos-trial-taxa');
+    if (taxaEl) taxaEl.textContent = `Taxa atual por job: ${taxa}%`;
+
+    const trialRoot = document.getElementById('planos-trial');
+    if (trialRoot) bindPlanLinks(trialRoot);
+  }
+
   /* —— Planos de assinatura (prestadores) —— */
   const PLAN_META = {
     essencial: {
@@ -441,4 +460,5 @@
   }
 
   loadPlanosAssinatura();
+  renderTrialBanner();
 })();

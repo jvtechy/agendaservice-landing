@@ -63,10 +63,12 @@ A seção `#planos` espelha a tela **Minha Assinatura** do Web App (Dev):
 
 | Plano | Anual | ≈/mês | Taxa/job |
 |-------|-------|-------|----------|
+| **Trial** (status inicial) | — | — | 15% |
 | Essencial | R$ 178,68 | R$ 14,89 | 15% |
 | Profissional | R$ 358,68 | R$ 29,89 | 5% |
 | Premium | R$ 479,88 | R$ 39,99 | 0% |
 
+O **Trial** aparece como faixa de status (como em Minha Assinatura no app), não como card de compra.
 Carrega `planos_assinatura` no Supabase quando houver dados; senão usa `planosAssinaturaFallback` em `js/config.js`.
 CTAs: Web App com `?auth=register&plan=<codigo>`.
 
