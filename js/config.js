@@ -12,34 +12,40 @@ window.AGENDASERVICE_CONFIG = {
   supabaseAnonKey:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5Z3pwanVkanNic2R0cmh3YXlsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NTI4NzQsImV4cCI6MjA4NTUyODg3NH0.69ncwkiLIF7DmY69pKgKh9nDcKwVIlJ_N0PoaAgbaqk',
   /**
-   * Fallback espelhando planos_assinatura do app (Dev).
-   * Quando a tabela tiver linhas ativas, a landing usa os dados do Supabase.
-   * preco_anual em reais; limite_aceites null = ilimitado.
+   * Fallback alinhado à tela "Minha Assinatura" do app (versão Dev).
+   * preco_anual em reais; taxa_job em %; limite_aceites null = ilimitado.
+   * Quando planos_assinatura tiver linhas ativas, a landing usa o Supabase.
    */
   planosAssinaturaFallback: [
     {
-      codigo: 'basico',
-      nome: 'Básico',
-      descricao: 'Ideal para começar a atender pela plataforma com baixo compromisso.',
-      preco_anual: 0,
-      limite_aceites: 8,
+      codigo: 'essencial',
+      nome: 'Essencial',
+      tagline: 'Menos que um Sanduíche',
+      descricao: 'Aceites ilimitados com taxa padrão de 15% por job.',
+      preco_anual: 178.68,
+      taxa_job: 15,
+      limite_aceites: null,
       ordem: 1,
       status: 1,
     },
     {
       codigo: 'profissional',
       nome: 'Profissional',
-      descricao: 'Para quem quer mais volume, destaque e taxa reduzida.',
-      preco_anual: 598.8,
-      limite_aceites: 40,
+      tagline: 'Custa menos que uma mini pizza por mês',
+      descricao: 'Taxa reduzida de 5% por job concluído.',
+      preco_anual: 358.68,
+      taxa_job: 5,
+      limite_aceites: null,
       ordem: 2,
       status: 1,
     },
     {
-      codigo: 'parceiro',
-      nome: 'Parceiro',
-      descricao: 'Máxima prioridade, aceites ilimitados e as melhores condições.',
-      preco_anual: 1198.8,
+      codigo: 'premium',
+      nome: 'Premium',
+      tagline: 'Você vai pagar menos do que uma pizza!',
+      descricao: 'Zero taxa por job — máxima margem para o prestador.',
+      preco_anual: 479.88,
+      taxa_job: 0,
       limite_aceites: null,
       ordem: 3,
       status: 1,

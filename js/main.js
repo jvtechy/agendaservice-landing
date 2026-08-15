@@ -210,35 +210,49 @@
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
   /* —— Planos de assinatura (prestadores) —— */
-  const PLAN_FEATURES = {
-    basico: [
-      'Até {limite} serviços aceitos por mês',
-      'Taxa de plataforma padrão',
-      'Agenda e painel de ganhos',
-      'Chat e notificações push',
-      'Listagem padrão nos serviços disponíveis',
-    ],
-    profissional: [
-      'Até {limite} serviços aceitos por mês',
-      'Taxa de plataforma reduzida',
-      'Destaque na listagem de serviços',
-      'Mapa e estatísticas de ganhos',
-      'Agenda, chat e push incluídos',
-    ],
-    parceiro: [
-      'Aceites ilimitados de serviços',
-      'Menor taxa de plataforma',
-      'Prioridade na fila de oportunidades',
-      'Selo Parceiro verificado',
-      'Suporte prioritário da equipe',
-    ],
+  const PLAN_META = {
+    essencial: {
+      tagline: 'Menos que um Sanduíche',
+      taxa_job: 15,
+      features: [
+        'Aceites ilimitados de serviços',
+        'Taxa de 15% por job',
+        'Agenda, chat e painel de ganhos',
+        'Checkout Asaas em breve',
+      ],
+    },
+    profissional: {
+      tagline: 'Custa menos que uma mini pizza por mês',
+      taxa_job: 5,
+      features: [
+        'Aceites ilimitados de serviços',
+        'Taxa reduzida de 5% por job',
+        'Melhor margem por serviço concluído',
+        'Agenda, chat e painel de ganhos',
+      ],
+    },
+    premium: {
+      tagline: 'Você vai pagar menos do que uma pizza!',
+      taxa_job: 0,
+      features: [
+        'Aceites ilimitados de serviços',
+        'Zero taxa por job',
+        'Máxima margem para o prestador',
+        'Agenda, chat e painel de ganhos',
+      ],
+    },
   };
 
   function formatBRL(value) {
     return Number(value || 0).toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     });
+  }
+
+  function planMetaKey(codigo) {
+    const code = String(codigo || '');
+    return Object.keys(PLAN_META).find((k) => code.includes(k)) || null;
   }
 
   function normalizePlan(raw) {
@@ -247,24 +261,41 @@
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/\s+/g, '_');
+    const meta = PLAN_META[planMetaKey(codigo)] || {};
+    const taxa =
+      raw.taxa_job != null
+        ? Number(raw.taxa_job)
+        : meta.taxa_job != null
+          ? Number(meta.taxa_job)
+          : null;
     return {
       codigo,
       nome: raw.nome || 'Plano',
+      tagline: raw.tagline || meta.tagline || '',
       descricao: raw.descricao || '',
       preco_anual: raw.preco_anual == null ? null : Number(raw.preco_anual),
-      limite_aceites: raw.limite_aceites == null || raw.limite_aceites === '' ? null : Number(raw.limite_aceites),
+      taxa_job: taxa,
+      limite_aceites:
+        raw.limite_aceites == null || raw.limite_aceites === ''
+          ? null
+          : Number(raw.limite_aceites),
       ordem: Number(raw.ordem || 0),
       status: raw.status,
+      features: meta.features || [],
     };
   }
 
   function planFeatures(plan) {
-    const key = Object.keys(PLAN_FEATURES).find((k) => plan.codigo.includes(k)) || 'basico';
-    const limiteLabel =
-      plan.limite_aceites == null || Number.isNaN(plan.limite_aceites) || plan.limite_aceites <= 0
-        ? 'ilimitados'
-        : String(plan.limite_aceites);
-    return PLAN_FEATURES[key].map((line) => line.replace('{limite}', limiteLabel));
+    if (plan.features && plan.features.length) return plan.features;
+    const taxa =
+      plan.taxa_job == null ? 'taxa conforme o plano' : `Taxa de ${plan.taxa_job}% por job`;
+    return [
+      plan.limite_aceites == null || plan.limite_aceites <= 0
+        ? 'Aceites ilimitados de serviços'
+        : `Até ${plan.limite_aceites} aceites`,
+      taxa,
+      'Agenda, chat e painel de ganhos',
+    ];
   }
 
   function isFeaturedPlan(plan) {
@@ -273,7 +304,13 @@
 
   function planPriceHtml(plan) {
     const anual = plan.preco_anual;
-    if (anual == null || Number.isNaN(anual) || anual <= 0) {
+    if (anual == null || Number.isNaN(anual) || anual < 0) {
+      return `
+        <div class="plan-price">
+          <span class="plan-price-main">Sob consulta</span>
+        </div>`;
+    }
+    if (anual === 0) {
       return `
         <div class="plan-price">
           <span class="plan-price-main">Grátis</span>
@@ -281,11 +318,16 @@
         </div>`;
     }
     const mensal = anual / 12;
+    const taxaLabel =
+      plan.taxa_job == null
+        ? ''
+        : `<span class="plan-price-taxa">Taxa ${plan.taxa_job}% por job</span>`;
     return `
       <div class="plan-price">
-        <span class="plan-price-main">${formatBRL(mensal)}</span>
-        <span class="plan-price-period">/mês</span>
-        <span class="plan-price-sub">ou ${formatBRL(anual)} / ano</span>
+        <span class="plan-price-main">R$ ${formatBRL(anual)}</span>
+        <span class="plan-price-period">/ano</span>
+        <span class="plan-price-sub">≈ R$ ${formatBRL(mensal)}/mês</span>
+        ${taxaLabel}
       </div>`;
   }
 
@@ -328,26 +370,24 @@
       .map((plan) => {
         const featured = isFeaturedPlan(plan);
         const features = planFeatures(plan);
-        const ctaLabel =
-          plan.preco_anual != null && plan.preco_anual > 0
-            ? `Assinar ${plan.nome}`
-            : 'Começar grátis';
         const params = JSON.stringify({ auth: 'register', plan: plan.codigo });
+        const tagline = plan.tagline
+          ? `<p class="plan-tagline mt-3 text-sm font-semibold ${
+              featured ? 'text-gold-light' : 'text-primary'
+            }">${plan.tagline}</p>`
+          : '';
         return `
           <article class="plan-card glass gradient-border rounded-3xl p-6 sm:p-8 flex flex-col ${
             featured ? 'plan-card--featured' : ''
           }" data-plan-codigo="${plan.codigo}">
-            ${
-              featured
-                ? '<span class="plan-badge">Mais popular</span>'
-                : ''
-            }
+            ${featured ? '<span class="plan-badge">Mais popular</span>' : ''}
             <p class="text-xs font-bold uppercase tracking-widest ${
               featured ? 'text-gold-light' : 'text-primary'
-            }">Assinatura</p>
+            }">Assinatura anual</p>
             <h3 class="text-xl font-bold text-white mt-1">${plan.nome}</h3>
+            ${tagline}
+            <p class="mt-2 text-sm text-gray-400 leading-relaxed">${plan.descricao || ''}</p>
             ${planPriceHtml(plan)}
-            <p class="mt-3 text-sm text-gray-400 leading-relaxed">${plan.descricao || ''}</p>
             <ul class="mt-6 space-y-2.5 text-sm text-gray-300 flex-1">
               ${features
                 .map(
@@ -360,10 +400,8 @@
             </ul>
             <a data-app-link data-app-path="/" data-app-params='${params}'
               class="mt-8 inline-flex items-center justify-center w-full font-semibold px-5 py-3 rounded-xl text-sm ${
-                featured
-                  ? 'btn-primary text-white'
-                  : 'btn-outline-gold text-gold-light'
-              }">${ctaLabel}</a>
+                featured ? 'btn-primary text-white' : 'btn-outline-gold text-gold-light'
+              }">Assinar anualmente</a>
           </article>`;
       })
       .join('');

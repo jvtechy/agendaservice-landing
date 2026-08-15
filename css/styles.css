@@ -238,6 +238,18 @@ body {
   margin-top: 0.15rem;
 }
 
+.plan-price-taxa {
+  flex-basis: 100%;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.plan-tagline {
+  line-height: 1.35;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

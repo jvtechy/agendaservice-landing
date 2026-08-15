@@ -59,11 +59,16 @@ Todos os botões com `data-app-link` redirecionam para `config.appUrl`. Parâmet
 
 ## Planos de assinatura
 
-A seção `#planos` carrega `planos_assinatura` do Supabase (mesma base do Web App).
-Se a tabela estiver vazia ou indisponível, usa `planosAssinaturaFallback` em `js/config.js`
-(Básico / Profissional / Parceiro — alinhado ao schema do app).
+A seção `#planos` espelha a tela **Minha Assinatura** do Web App (Dev):
 
-CTAs abrem o Web App com `?auth=register&plan=<codigo>`.
+| Plano | Anual | ≈/mês | Taxa/job |
+|-------|-------|-------|----------|
+| Essencial | R$ 178,68 | R$ 14,89 | 15% |
+| Profissional | R$ 358,68 | R$ 29,89 | 5% |
+| Premium | R$ 479,88 | R$ 39,99 | 0% |
+
+Carrega `planos_assinatura` no Supabase quando houver dados; senão usa `planosAssinaturaFallback` em `js/config.js`.
+CTAs: Web App com `?auth=register&plan=<codigo>`.
 
 ## Logo
 
