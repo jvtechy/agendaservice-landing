@@ -39,7 +39,19 @@ if (-not (git rev-parse --verify "origin/$branch" 2>$null)) {
   Write-Error "Branch remoto nao encontrado: origin/$branch"
 }
 
-git switch -C $branch "origin/$branch"
+# Nao use reset --hard aqui: apaga PNGs locais que nao estao no branch remoto.
+$current = git branch --show-current
+if ($current -ne $branch) {
+  git switch $branch 2>$null
+  if ($LASTEXITCODE -ne 0) {
+    git switch -c $branch "origin/$branch"
+  }
+}
+git merge -q --ff-only "origin/$branch" 2>$null
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "Branch local divergiu; alinhando com origin/$branch (sem apagar arquivos nao rastreados)..."
+  git reset --mixed "origin/$branch"
+}
 
 foreach ($canonical in $expected.Keys) {
   $baseNames = $expected[$canonical]
