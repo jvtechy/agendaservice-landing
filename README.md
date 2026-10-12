@@ -75,16 +75,15 @@ A seção **Por Dentro** (`porDentroGaleria` em `js/config.js`) renderiza 3×3 t
 
 **Windows:** não use `git pull` se você já tem PNGs em `assets/` — o Git aborta com “untracked files would be overwritten”.
 
-Se o `pull` ou o `push-por-dentro-assets.ps1` antigo (com `git merge`) falhar, rode **uma vez** (copie e cole no PowerShell na raiz do repo):
+**Nao use `git pull`.** Se der erro de *untracked files would be overwritten*, copie **tudo** no PowerShell (pasta do projeto):
 
 ```powershell
 git fetch origin
-git checkout origin/cursor/landing-planos-por-dentro-8972 -- scripts/
-git reset --mixed origin/cursor/landing-planos-por-dentro-8972
-.\scripts\push-por-dentro-assets.ps1
+git show origin/cursor/landing-planos-por-dentro-8972:PUBLICAR-POR-DENTRO.ps1 | Out-File -FilePath PUBLICAR-POR-DENTRO.ps1 -Encoding utf8
+powershell -ExecutionPolicy Bypass -File .\PUBLICAR-POR-DENTRO.ps1
 ```
 
-Ou: `.\scripts\desbloquear-pull.ps1` (depois do primeiro `git fetch` + `git checkout ... -- scripts/desbloquear-pull.ps1` se esse arquivo ainda nao existir localmente).
+Alternativa: duplo clique em `publicar-por-dentro.cmd` (apos `git fetch` uma vez).
 CTAs: Web App com `?auth=register&plan=<codigo>`.
 
 ## Logo

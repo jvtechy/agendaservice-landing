@@ -3,6 +3,20 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $branch = "cursor/landing-planos-por-dentro-8972"
 
+# Script antigo (com git merge) nao funciona no Windows com PNGs locais.
+if (Select-String -LiteralPath $PSCommandPath -Pattern 'git\s+merge' -Quiet) {
+  $publisher = Join-Path $root "PUBLICAR-POR-DENTRO.ps1"
+  if (-not (Test-Path $publisher)) {
+    Write-Host "Script desatualizado. Rode na raiz do repo:"
+    Write-Host "  git fetch origin"
+    Write-Host "  git show origin/$branch`:PUBLICAR-POR-DENTRO.ps1 | Out-File PUBLICAR-POR-DENTRO.ps1 -Encoding utf8"
+    Write-Host "  powershell -ExecutionPolicy Bypass -File .\PUBLICAR-POR-DENTRO.ps1"
+    exit 1
+  }
+  & $publisher
+  exit $LASTEXITCODE
+}
+
 # Nomes oficiais em assets/ (ASCII: SERVICOS, sem cedilha)
 $expected = [ordered]@{
   "CLIENTE_MENU_VERTICAL.png" = @("CLIENTE_MENU_VERTICAL")
