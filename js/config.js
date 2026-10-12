@@ -23,6 +23,8 @@ window.AGENDASERVICE_CONFIG = {
     trial_aceites: 2,
     taxa_job: 20,
   },
+  /** Incremente ao trocar PNGs em assets/ (cache do navegador e CDN). */
+  assetsVersion: '20260330',
   /** Taxa por job (%) quando a coluna taxa_job não vier do Supabase. */
   taxaPorCodigo: {
     trial: 20,

@@ -504,7 +504,8 @@
         const isCliente = item.perfil === 'cliente';
         const labelClass = isCliente ? 'text-primary' : 'text-gold-light';
         const label = isCliente ? 'Cliente' : 'Prestador';
-        const src = `assets/${encodeURI(item.arquivo || '')}`;
+        const assetV = cfg.assetsVersion ? `?v=${encodeURIComponent(String(cfg.assetsVersion))}` : '';
+        const src = `assets/${encodeURI(item.arquivo || '')}${assetV}`;
         const alt = `AgendaService — ${label.toLowerCase()}: ${item.titulo || ''}`;
         return `
           <article class="screenshot-card flex flex-col items-center text-center max-w-[350px] w-full mx-auto">
