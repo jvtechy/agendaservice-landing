@@ -21,8 +21,69 @@ window.AGENDASERVICE_CONFIG = {
     descricao: 'Comece sem pagar assinatura e teste a plataforma antes de escolher um plano anual.',
     trial_dias: 7,
     trial_aceites: 2,
-    taxa_job: 15,
+    taxa_job: 20,
   },
+  /** Taxa por job (%) quando a coluna taxa_job não vier do Supabase. */
+  taxaPorCodigo: {
+    trial: 20,
+    essencial: 16,
+    profissional: 12,
+    premium: 5,
+  },
+  /**
+   * Galeria "Por Dentro" — 3 linhas × 3 imagens (clientes, depois prestadores).
+   * Atualize `arquivo` em assets/ quando trocar as capturas de tela.
+   */
+  porDentroGaleria: [
+    {
+      perfil: 'cliente',
+      titulo: 'Meus agendamentos',
+      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS.PNG',
+      descricao: 'Acompanhe pedidos em andamento e escolha o prestador ideal para cada serviço.',
+    },
+    {
+      perfil: 'cliente',
+      titulo: 'Serviços concluídos',
+      arquivo: 'CLIENTE_SERVIÇOS_CONCLUIDOS.PNG',
+      descricao: 'Histórico de serviços finalizados, avaliações e liberação de pagamento.',
+    },
+    {
+      perfil: 'cliente',
+      titulo: 'Cliente logado',
+      arquivo: 'screenshot-cliente.png',
+      descricao: 'Acesso ao painel do cliente após login — visão geral dos serviços.',
+    },
+    {
+      perfil: 'prestador',
+      titulo: 'Serviços disponíveis',
+      arquivo: 'PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG',
+      descricao: 'Oportunidades na região para o prestador aceitar após a escolha do cliente.',
+    },
+    {
+      perfil: 'prestador',
+      titulo: 'Calendário de serviços',
+      arquivo: 'PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG',
+      descricao: 'Agenda do dia e da semana com serviços confirmados.',
+    },
+    {
+      perfil: 'prestador',
+      titulo: 'Meus serviços — mapa',
+      arquivo: 'PRESTADOR_MEUS_SERVICOS-MAPA.PNG',
+      descricao: 'Mapa com localização dos atendimentos para planejar o deslocamento.',
+    },
+    {
+      perfil: 'prestador',
+      titulo: 'Meus ganhos',
+      arquivo: 'PRESTADOR_MEUS_GANHOS.png',
+      descricao: 'Resumo de valores a receber e histórico de pagamentos.',
+    },
+    {
+      perfil: 'prestador',
+      titulo: 'Painel do prestador',
+      arquivo: 'screenshot-prestador.png',
+      descricao: 'Visão do painel do profissional parceiro na plataforma.',
+    },
+  ],
   /**
    * Fallback alinhado à tela "Minha Assinatura" do app (versão Dev).
    * preco_anual em reais; taxa_job em %; limite_aceites null = ilimitado.
@@ -33,9 +94,9 @@ window.AGENDASERVICE_CONFIG = {
       codigo: 'essencial',
       nome: 'Essencial',
       tagline: 'Menos que um Sanduíche',
-      descricao: 'Aceites ilimitados com taxa padrão de 15% por job.',
+      descricao: 'Aceites ilimitados com taxa de 16% por job.',
       preco_anual: 178.68,
-      taxa_job: 15,
+      taxa_job: 16,
       limite_aceites: null,
       ordem: 1,
       status: 1,
@@ -44,9 +105,9 @@ window.AGENDASERVICE_CONFIG = {
       codigo: 'profissional',
       nome: 'Profissional',
       tagline: 'Custa menos que uma mini pizza por mês',
-      descricao: 'Taxa reduzida de 5% por job concluído.',
+      descricao: 'Taxa reduzida de 12% por job concluído.',
       preco_anual: 358.68,
-      taxa_job: 5,
+      taxa_job: 12,
       limite_aceites: null,
       ordem: 2,
       status: 1,
@@ -55,9 +116,9 @@ window.AGENDASERVICE_CONFIG = {
       codigo: 'premium',
       nome: 'Premium',
       tagline: 'Você vai pagar menos do que uma pizza!',
-      descricao: 'Zero taxa por job — máxima margem para o prestador.',
+      descricao: 'Taxa de 5% por job — melhor margem entre os planos pagos.',
       preco_anual: 479.88,
-      taxa_job: 0,
+      taxa_job: 5,
       limite_aceites: null,
       ordem: 3,
       status: 1,

@@ -63,13 +63,15 @@ A seção `#planos` espelha a tela **Minha Assinatura** do Web App (Dev):
 
 | Plano | Anual | ≈/mês | Taxa/job |
 |-------|-------|-------|----------|
-| **Trial** (status inicial) | — | — | 15% |
-| Essencial | R$ 178,68 | R$ 14,89 | 15% |
-| Profissional | R$ 358,68 | R$ 29,89 | 5% |
-| Premium | R$ 479,88 | R$ 39,99 | 0% |
+| **Trial** (status inicial) | — | — | 20% |
+| Essencial | R$ 178,68 | R$ 14,89 | 16% |
+| Profissional | R$ 358,68 | R$ 29,89 | 12% |
+| Premium | R$ 479,88 | R$ 39,99 | 5% |
 
 O **Trial** aparece como faixa de status (como em Minha Assinatura no app), não como card de compra.
-Carrega `planos_assinatura` no Supabase quando houver dados; senão usa `planosAssinaturaFallback` em `js/config.js`.
+Carrega `planos_assinatura` no Supabase quando houver dados (inclui `taxa_job` quando a coluna existir); senão usa `planosAssinaturaFallback` e `taxaPorCodigo` em `js/config.js`.
+
+A seção **Por Dentro** (`porDentroGaleria` em `js/config.js`) renderiza 3×3 telas — clientes primeiro, depois prestadores.
 CTAs: Web App com `?auth=register&plan=<codigo>`.
 
 ## Logo

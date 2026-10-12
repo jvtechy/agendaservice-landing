@@ -213,7 +213,9 @@
     const trial = cfg.trialAssinatura || {};
     const aceites = Number(trial.trial_aceites != null ? trial.trial_aceites : 2);
     const dias = Number(trial.trial_dias != null ? trial.trial_dias : 7);
-    const taxa = Number(trial.taxa_job != null ? trial.taxa_job : 15);
+    const taxaDefault =
+      cfg.taxaPorCodigo && cfg.taxaPorCodigo.trial != null ? cfg.taxaPorCodigo.trial : 20;
+    const taxa = Number(trial.taxa_job != null ? trial.taxa_job : taxaDefault);
 
     document.querySelectorAll('[data-trial-aceites]').forEach((el) => {
       el.textContent = String(aceites);
@@ -229,33 +231,38 @@
   }
 
   /* —— Planos de assinatura (prestadores) —— */
+  const TAXA_POR_CODIGO = Object.assign(
+    { trial: 20, essencial: 16, profissional: 12, premium: 5 },
+    cfg.taxaPorCodigo || {}
+  );
+
   const PLAN_META = {
     essencial: {
       tagline: 'Menos que um Sanduíche',
-      taxa_job: 15,
+      taxa_job: TAXA_POR_CODIGO.essencial,
       features: [
         'Aceites ilimitados de serviços',
-        'Taxa de 15% por job',
+        `Taxa de ${TAXA_POR_CODIGO.essencial}% por job`,
         'Agenda, chat e painel de ganhos',
         'Checkout Asaas em breve',
       ],
     },
     profissional: {
       tagline: 'Custa menos que uma mini pizza por mês',
-      taxa_job: 5,
+      taxa_job: TAXA_POR_CODIGO.profissional,
       features: [
         'Aceites ilimitados de serviços',
-        'Taxa reduzida de 5% por job',
+        `Taxa reduzida de ${TAXA_POR_CODIGO.profissional}% por job`,
         'Melhor margem por serviço concluído',
         'Agenda, chat e painel de ganhos',
       ],
     },
     premium: {
       tagline: 'Você vai pagar menos do que uma pizza!',
-      taxa_job: 0,
+      taxa_job: TAXA_POR_CODIGO.premium,
       features: [
         'Aceites ilimitados de serviços',
-        'Zero taxa por job',
+        `Taxa de ${TAXA_POR_CODIGO.premium}% por job`,
         'Máxima margem para o prestador',
         'Agenda, chat e painel de ganhos',
       ],
@@ -280,13 +287,15 @@
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/\s+/g, '_');
-    const meta = PLAN_META[planMetaKey(codigo)] || {};
+    const key = planMetaKey(codigo);
+    const meta = (key && PLAN_META[key]) || {};
+    const taxaFromCodigo = key && TAXA_POR_CODIGO[key] != null ? Number(TAXA_POR_CODIGO[key]) : null;
     const taxa =
       raw.taxa_job != null
         ? Number(raw.taxa_job)
         : meta.taxa_job != null
           ? Number(meta.taxa_job)
-          : null;
+          : taxaFromCodigo;
     return {
       codigo,
       nome: raw.nome || 'Plano',
@@ -428,6 +437,28 @@
     bindPlanLinks(grid);
   }
 
+  async function fetchPlanosFromSupabase(url, key) {
+    const baseSelect =
+      'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem,taxa_job';
+    const headers = {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      Accept: 'application/json',
+    };
+    const query = `select=${baseSelect}&status=eq.1&order=ordem.asc`;
+    let res = await fetch(`${url}/rest/v1/planos_assinatura?${query}`, { headers });
+    if (res.status === 400) {
+      const fallbackSelect =
+        'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem';
+      res = await fetch(`${url}/rest/v1/planos_assinatura?select=${fallbackSelect}&status=eq.1&order=ordem.asc`, {
+        headers,
+      });
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+    return Array.isArray(rows) ? rows : [];
+  }
+
   async function loadPlanosAssinatura() {
     const fallback = Array.isArray(cfg.planosAssinaturaFallback)
       ? cfg.planosAssinaturaFallback
@@ -441,24 +472,74 @@
     }
 
     try {
-      const res = await fetch(
-        `${url}/rest/v1/planos_assinatura?select=id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem&status=eq.1&order=ordem.asc`,
-        {
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${key}`,
-            Accept: 'application/json',
-          },
+      let rows = await fetchPlanosFromSupabase(url, key);
+      if (!rows.length) {
+        const headers = {
+          apikey: key,
+          Authorization: `Bearer ${key}`,
+          Accept: 'application/json',
+        };
+        const res = await fetch(
+          `${url}/rest/v1/planos_assinatura?select=id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem&order=ordem.asc`,
+          { headers }
+        );
+        if (res.ok) {
+          const all = await res.json();
+          if (Array.isArray(all)) rows = all.filter((r) => r.status == null || Number(r.status) === 1);
         }
-      );
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const rows = await res.json();
-      renderPlans(Array.isArray(rows) && rows.length ? rows : fallback);
+      }
+      renderPlans(rows.length ? rows : fallback);
     } catch {
       renderPlans(fallback);
     }
   }
 
+  function renderPorDentroGaleria() {
+    const grid = document.getElementById('por-dentro-grid');
+    const items = Array.isArray(cfg.porDentroGaleria) ? cfg.porDentroGaleria : [];
+    if (!grid || !items.length) return;
+
+    grid.innerHTML = items
+      .map((item) => {
+        const isCliente = item.perfil === 'cliente';
+        const labelClass = isCliente ? 'text-primary' : 'text-gold-light';
+        const label = isCliente ? 'Cliente' : 'Prestador';
+        const src = `assets/${encodeURI(item.arquivo || '')}`;
+        const alt = `AgendaService — ${label.toLowerCase()}: ${item.titulo || ''}`;
+        return `
+          <article class="screenshot-card flex flex-col items-center text-center max-w-[350px] w-full mx-auto">
+            <div class="mb-4">
+              <span class="text-[10px] font-bold uppercase tracking-widest ${labelClass}">${label}</span>
+              <h3 class="text-lg font-bold text-white mt-1">${item.titulo || ''}</h3>
+            </div>
+            <div class="phone-frame w-[300px] sm:w-[330px] lg:w-[350px] rounded-[2.85rem] p-3.5">
+              <div class="phone-notch w-28 h-5 mx-auto rounded-b-xl mb-2"></div>
+              <div class="mock-screen rounded-[2rem] overflow-hidden aspect-[9/18]">
+                <img
+                  src="${src}"
+                  alt="${alt}"
+                  class="w-full h-full object-cover object-top"
+                  loading="lazy"
+                  width="390"
+                  height="844"
+                />
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-400">${item.descricao || ''}</p>
+          </article>`;
+      })
+      .join('');
+
+    const remainder = items.length % 3;
+    if (remainder === 2) {
+      grid.innerHTML += '<div class="hidden xl:block" aria-hidden="true"></div>';
+    } else if (remainder === 1) {
+      grid.innerHTML +=
+        '<div class="hidden xl:block" aria-hidden="true"></div><div class="hidden xl:block" aria-hidden="true"></div>';
+    }
+  }
+
   loadPlanosAssinatura();
   renderTrialBanner();
+  renderPorDentroGaleria();
 })();
