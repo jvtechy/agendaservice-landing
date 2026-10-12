@@ -3,14 +3,15 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $branch = "cursor/landing-planos-por-dentro-8972"
 
+# Nomes ASCII no Git (evita mojibake SERVICOS/SERVIÇOS no Windows)
 $expected = [ordered]@{
   "CLIENTE_MENU_VERTICAL.png" = @("CLIENTE_MENU_VERTICAL")
   "CLIENTE_MEUS_AGENDAMENTOS.png" = @("CLIENTE_MEUS_AGENDAMENTOS")
   "CLIENTE_MEUS_PAGAMENTOS.png" = @("CLIENTE_MEUS_PAGAMENTOS")
-  "CLIENTE_SERVIÇOS_CONCLUIDOS.png" = @("CLIENTE_SERVIÇOS_CONCLUIDOS", "CLIENTE_SERVICOS_CONCLUIDOS")
+  "CLIENTE_SERVICOS_CONCLUIDOS.png" = @("CLIENTE_SERVICOS_CONCLUIDOS", "CLIENTE_SERVIÇOS_CONCLUIDOS", "CLIENTE_SERVIÃOS_CONCLUIDOS")
   "PRESTADOR_LOGADO.png" = @("PRESTADOR_LOGADO")
-  "PRESTADOR_SERVIÇOS_DISPONIVEIS.png" = @("PRESTADOR_SERVIÇOS_DISPONIVEIS", "PRESTADOR_SERVICOS_DISPONIVEIS")
-  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVIÇOS", "PRESTADOR_CALENDARIO_DE_SERVICOS")
+  "PRESTADOR_SERVICOS_DISPONIVEIS.png" = @("PRESTADOR_SERVICOS_DISPONIVEIS", "PRESTADOR_SERVIÇOS_DISPONIVEIS")
+  "PRESTADOR_CALENDARIO_DE_SERVICOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVICOS", "PRESTADOR_CALENDARIO_DE_SERVIÇOS")
   "PRESTADOR_MEUS_SERVICOS-MAPA.png" = @("PRESTADOR_MEUS_SERVICOS-MAPA", "PRESTADOR_MEUS_SERVIÇOS-MAPA")
   "PRESTADOR_MEUS_GANHOS.png" = @("PRESTADOR_MEUS_GANHOS")
 }
@@ -26,7 +27,7 @@ function Normalize-AssetBaseName {
       $sb.Append($ch) | Out-Null
     }
   }
-  return $sb.ToString().ToUpperInvariant()
+  return ($sb.ToString().ToUpperInvariant() -replace 'Ç', 'C' -replace 'Ã', 'A')
 }
 
 function Find-AssetByBaseName {
@@ -68,7 +69,6 @@ if ($LASTEXITCODE -ne 0) {
   git reset --mixed "origin/$branch"
 }
 
-# Remove do Git qualquer PNG antigo/duplicado antes de publicar as 9
 git ls-files "assets/*" | ForEach-Object {
   $name = Split-Path $_ -Leaf
   if ($keepInRepo -contains $name) { return }
@@ -100,14 +100,14 @@ if ($missing.Count) {
   Write-Host ""
   Write-Host "Arquivos em assets/:"
   Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object { Write-Host "  - $($_.Name)" }
-  Write-Error "Faltam $($missing.Count) imagem(ns). Rode recuperar-assets-locais.ps1 e/ou copie do backup."
+  Write-Error "Faltam $($missing.Count) imagem(ns)."
 }
 
-# Apaga do disco duplicatas que nao entram no repo (mantem as 9 + logos)
 Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object {
   if ($keepInRepo -contains $_.Name) { return }
   if ($_.Extension -match '^\.(png|PNG)$') {
     Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue
+    git rm -f --ignore-unmatch "assets/$($_.Name)" 2>$null | Out-Null
   }
 }
 

@@ -56,7 +56,7 @@ window.AGENDASERVICE_CONFIG = {
     {
       perfil: 'cliente',
       titulo: 'Serviços concluídos',
-      arquivo: 'CLIENTE_SERVIÇOS_CONCLUIDOS.png',
+      arquivo: 'CLIENTE_SERVICOS_CONCLUIDOS.png',
       descricao: 'Histórico de serviços finalizados, avaliações e liberação de pagamento.',
     },
     {
@@ -68,13 +68,13 @@ window.AGENDASERVICE_CONFIG = {
     {
       perfil: 'prestador',
       titulo: 'Serviços disponíveis',
-      arquivo: 'PRESTADOR_SERVIÇOS_DISPONIVEIS.png',
+      arquivo: 'PRESTADOR_SERVICOS_DISPONIVEIS.png',
       descricao: 'Oportunidades na região após o cliente escolher o prestador.',
     },
     {
       perfil: 'prestador',
       titulo: 'Calendário de serviços',
-      arquivo: 'PRESTADOR_CALENDARIO_DE_SERVIÇOS.png',
+      arquivo: 'PRESTADOR_CALENDARIO_DE_SERVICOS.png',
       descricao: 'Agenda do dia e da semana com serviços confirmados.',
     },
     {
