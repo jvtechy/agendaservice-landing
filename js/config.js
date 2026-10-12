@@ -39,7 +39,19 @@ window.AGENDASERVICE_CONFIG = {
       perfil: 'cliente',
       titulo: 'Meus agendamentos',
       arquivo: 'CLIENTE_MEUS_AGENDAMENTOS.PNG',
-      descricao: 'Acompanhe pedidos em andamento e escolha o prestador ideal para cada serviço.',
+      descricao: 'Lista de pedidos em andamento — compare prestadores e escolha quem vai atender.',
+    },
+    {
+      perfil: 'cliente',
+      titulo: 'Detalhe do agendamento',
+      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS-2.PNG',
+      descricao: 'Visualize datas, valores e status antes de confirmar o profissional.',
+    },
+    {
+      perfil: 'cliente',
+      titulo: 'Meus pagamentos',
+      arquivo: 'CLIENTE_MEUS_PAGAMENTOS.PNG',
+      descricao: 'Pagamentos via PIX com transparência em cada etapa do serviço.',
     },
     {
       perfil: 'cliente',
@@ -48,16 +60,16 @@ window.AGENDASERVICE_CONFIG = {
       descricao: 'Histórico de serviços finalizados, avaliações e liberação de pagamento.',
     },
     {
-      perfil: 'cliente',
-      titulo: 'Cliente logado',
-      arquivo: 'screenshot-cliente.png',
-      descricao: 'Acesso ao painel do cliente após login — visão geral dos serviços.',
+      perfil: 'prestador',
+      titulo: 'Prestador logado',
+      arquivo: 'PRESTADOR_LOGADO.PNG',
+      descricao: 'Painel do profissional após login — visão geral da operação.',
     },
     {
       perfil: 'prestador',
       titulo: 'Serviços disponíveis',
       arquivo: 'PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG',
-      descricao: 'Oportunidades na região para o prestador aceitar após a escolha do cliente.',
+      descricao: 'Oportunidades na região após o cliente escolher o prestador.',
     },
     {
       perfil: 'prestador',
@@ -76,12 +88,6 @@ window.AGENDASERVICE_CONFIG = {
       titulo: 'Meus ganhos',
       arquivo: 'PRESTADOR_MEUS_GANHOS.png',
       descricao: 'Resumo de valores a receber e histórico de pagamentos.',
-    },
-    {
-      perfil: 'prestador',
-      titulo: 'Painel do prestador',
-      arquivo: 'screenshot-prestador.png',
-      descricao: 'Visão do painel do profissional parceiro na plataforma.',
     },
   ],
   /**
