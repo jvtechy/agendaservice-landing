@@ -180,11 +180,32 @@ Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object {
   }
 }
 
+function Bump-AssetsVersionInConfig {
+  $configPath = Join-Path $root "js\config.js"
+  if (-not (Test-Path -LiteralPath $configPath)) { return }
+  $ver = (Get-Date).ToString("yyyyMMddHHmm")
+  $c = Get-Content -LiteralPath $configPath -Raw
+  if ($c -match "assetsVersion:\s*'[^']+'") {
+    $c = [regex]::Replace($c, "assetsVersion:\s*'[^']+'", "assetsVersion: '$ver'")
+    Set-Content -LiteralPath $configPath -Value $c -Encoding utf8
+    $null = Invoke-Git add js/config.js
+  }
+}
+
+$pngStaged = @(git diff --cached --name-only -- "assets/*.png")
+if ($pngStaged.Count -gt 0) {
+  Bump-AssetsVersionInConfig
+}
+
 git status
 $pending = git diff --cached --name-only
 if (-not $pending) {
   Write-Host ""
-  Write-Host "Nada novo para commitar (GitHub ja tem as 9 imagens ou arquivos identicos)."
+  Write-Host "Nada novo para commitar no branch $branch (PNGs ja iguais ao GitHub)."
+  Write-Host ""
+  Write-Host "IMPORTANTE: o site em PRODUCAO (Vercel) publica a branch MAIN."
+  Write-Host "Se a landing ainda mostra imagens antigas, faca MERGE do PR #2 em main:"
+  Write-Host "  https://github.com/jvtechy/agendaservice-landing/pull/2"
   exit 0
 }
 
@@ -195,4 +216,5 @@ $r = Invoke-Git push -u origin $branch
 if ($r.Code -ne 0) { Write-Error "git push falhou:`n$($r.Out)" }
 
 Write-Host ""
-Write-Host "OK - 9 imagens publicadas no GitHub ($branch)."
+Write-Host "OK - imagens publicadas no branch $branch."
+Write-Host "Para PRODUCAO: merge o PR #2 em main (ou git merge $branch na main e push)."
