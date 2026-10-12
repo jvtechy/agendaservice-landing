@@ -33,11 +33,12 @@ function Find-AssetByBaseName {
   param([System.IO.FileInfo[]]$Files, [string[]]$BaseNames)
   $want = @{}
   foreach ($base in $BaseNames) {
-    $want[Normalize-AssetBaseName $base] = $true
+    $wantKey = Normalize-AssetBaseName $base
+    $want[$wantKey] = $true
   }
   foreach ($f in $Files) {
-    $key = Normalize-AssetBaseName $f.BaseName
-    if ($want.ContainsKey($key)) { return $f }
+    $fileKey = Normalize-AssetBaseName $f.BaseName
+    if ($want.ContainsKey($fileKey)) { return $f }
   }
   return $null
 }
