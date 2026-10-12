@@ -49,7 +49,10 @@ find_asset() {
 missing=()
 for canonical in "${!expected[@]}"; do
   if src=$(find_asset "${expected[$canonical]}"); then
-    cp -f "$src" "$assets/$canonical"
+    dest="$assets/$canonical"
+    if [[ "$(readlink -f "$src")" != "$(readlink -f "$dest" 2>/dev/null || echo "")" ]]; then
+      cp -f "$src" "$dest"
+    fi
     git add -f "assets/$canonical"
   else
     missing+=("$canonical")

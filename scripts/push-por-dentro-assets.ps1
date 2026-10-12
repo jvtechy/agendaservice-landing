@@ -71,7 +71,14 @@ foreach ($canonical in $expected.Keys) {
     continue
   }
   $dest = Join-Path $assetsDir $canonical
-  Copy-Item -LiteralPath $source.FullName -Destination $dest -Force
+  $sourcePath = (Resolve-Path -LiteralPath $source.FullName).Path
+  $destPath = (Resolve-Path -LiteralPath $dest -ErrorAction SilentlyContinue).Path
+  if (-not $destPath) {
+    $destPath = [System.IO.Path]::GetFullPath($dest)
+  }
+  if ($sourcePath -ne $destPath) {
+    Copy-Item -LiteralPath $source.FullName -Destination $dest -Force
+  }
   git add -f -- "assets/$canonical"
 }
 
