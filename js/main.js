@@ -215,7 +215,10 @@
     const dias = Number(trial.trial_dias != null ? trial.trial_dias : 7);
     const taxaDefault =
       cfg.taxaPorCodigo && cfg.taxaPorCodigo.trial != null ? cfg.taxaPorCodigo.trial : 20;
-    const taxa = Number(trial.taxa_job != null ? trial.taxa_job : taxaDefault);
+    const taxa =
+      cfg.prioridadeTaxaSupabase && trial.taxa_job != null
+        ? Number(trial.taxa_job)
+        : Number(taxaDefault);
 
     document.querySelectorAll('[data-trial-aceites]').forEach((el) => {
       el.textContent = String(aceites);
@@ -236,38 +239,59 @@
     cfg.taxaPorCodigo || {}
   );
 
-  const PLAN_META = {
-    essencial: {
-      tagline: 'Menos que um Sanduíche',
-      taxa_job: TAXA_POR_CODIGO.essencial,
-      features: [
-        'Aceites ilimitados de serviços',
-        `Taxa de ${TAXA_POR_CODIGO.essencial}% por job`,
-        'Agenda, chat e painel de ganhos',
-        'Checkout Asaas em breve',
-      ],
-    },
-    profissional: {
-      tagline: 'Custa menos que uma mini pizza por mês',
-      taxa_job: TAXA_POR_CODIGO.profissional,
-      features: [
-        'Aceites ilimitados de serviços',
-        `Taxa reduzida de ${TAXA_POR_CODIGO.profissional}% por job`,
-        'Melhor margem por serviço concluído',
-        'Agenda, chat e painel de ganhos',
-      ],
-    },
-    premium: {
-      tagline: 'Você vai pagar menos do que uma pizza!',
-      taxa_job: TAXA_POR_CODIGO.premium,
-      features: [
-        'Aceites ilimitados de serviços',
-        `Taxa de ${TAXA_POR_CODIGO.premium}% por job`,
-        'Máxima margem para o prestador',
-        'Agenda, chat e painel de ganhos',
-      ],
-    },
+  let planosTaxaColumnAvailable = false;
+
+  const PLAN_TAGLINES = {
+    essencial: 'Menos que um Sanduíche',
+    profissional: 'Custa menos que uma mini pizza por mês',
+    premium: 'Você vai pagar menos do que uma pizza!',
   };
+
+  function fallbackPlanByKey(key) {
+    if (!key || !Array.isArray(cfg.planosAssinaturaFallback)) return null;
+    return cfg.planosAssinaturaFallback.find((p) => planMetaKey(p.codigo) === key) || null;
+  }
+
+  function extractTaxaFromRow(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const cols = ['taxa_job', 'taxa', 'taxa_percent', 'percentual_taxa'];
+    for (const col of cols) {
+      if (raw[col] == null || raw[col] === '') continue;
+      const n = Number(raw[col]);
+      if (!Number.isNaN(n)) return n;
+    }
+    return null;
+  }
+
+  function resolveTaxaJob(raw, key) {
+    const fromDb = extractTaxaFromRow(raw);
+    const fromConfig = key && TAXA_POR_CODIGO[key] != null ? Number(TAXA_POR_CODIGO[key]) : null;
+    if (cfg.prioridadeTaxaSupabase && planosTaxaColumnAvailable && fromDb != null) {
+      return fromDb;
+    }
+    if (fromConfig != null) return fromConfig;
+    const fb = key ? fallbackPlanByKey(key) : null;
+    if (fb && fb.taxa_job != null) return Number(fb.taxa_job);
+    return fromDb;
+  }
+
+  function buildPlanFeatures(key, taxa, limiteAceites) {
+    const taxaLine =
+      taxa == null
+        ? 'Taxa conforme o plano'
+        : key === 'profissional'
+          ? `Taxa reduzida de ${taxa}% por job`
+          : `Taxa de ${taxa}% por job`;
+    const aceitesLine =
+      limiteAceites == null || limiteAceites <= 0
+        ? 'Aceites ilimitados de serviços'
+        : `Até ${limiteAceites} aceites`;
+    const base = [aceitesLine, taxaLine, 'Agenda, chat e painel de ganhos'];
+    if (key === 'essencial') base.push('Checkout Asaas em breve');
+    if (key === 'profissional') base.splice(2, 0, 'Melhor margem por serviço concluído');
+    if (key === 'premium') base.push('Máxima margem para o prestador');
+    return base;
+  }
 
   function formatBRL(value) {
     return Number(value || 0).toLocaleString('pt-BR', {
@@ -288,42 +312,56 @@
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/\s+/g, '_');
     const key = planMetaKey(codigo);
-    const meta = (key && PLAN_META[key]) || {};
-    const taxaFromCodigo = key && TAXA_POR_CODIGO[key] != null ? Number(TAXA_POR_CODIGO[key]) : null;
-    const taxa =
-      raw.taxa_job != null
-        ? Number(raw.taxa_job)
-        : meta.taxa_job != null
-          ? Number(meta.taxa_job)
-          : taxaFromCodigo;
+    const fb = key ? fallbackPlanByKey(key) : null;
+    const taxa = resolveTaxaJob(raw, key);
+    const limite =
+      raw.limite_aceites == null || raw.limite_aceites === ''
+        ? fb && fb.limite_aceites != null
+          ? fb.limite_aceites
+          : null
+        : Number(raw.limite_aceites);
+
     return {
-      codigo,
-      nome: raw.nome || 'Plano',
-      tagline: raw.tagline || meta.tagline || '',
-      descricao: raw.descricao || '',
-      preco_anual: raw.preco_anual == null ? null : Number(raw.preco_anual),
+      codigo: key || codigo,
+      nome: raw.nome || fb?.nome || 'Plano',
+      tagline: raw.tagline || fb?.tagline || (key && PLAN_TAGLINES[key]) || '',
+      descricao: fb?.descricao || raw.descricao || '',
+      preco_anual:
+        raw.preco_anual == null || raw.preco_anual === ''
+          ? fb?.preco_anual == null
+            ? null
+            : Number(fb.preco_anual)
+          : Number(raw.preco_anual),
       taxa_job: taxa,
-      limite_aceites:
-        raw.limite_aceites == null || raw.limite_aceites === ''
-          ? null
-          : Number(raw.limite_aceites),
-      ordem: Number(raw.ordem || 0),
-      status: raw.status,
-      features: meta.features || [],
+      limite_aceites: limite,
+      ordem: Number(raw.ordem != null ? raw.ordem : fb?.ordem || 0),
+      status: raw.status != null ? raw.status : fb?.status,
+      features: buildPlanFeatures(key, taxa, limite),
     };
   }
 
   function planFeatures(plan) {
     if (plan.features && plan.features.length) return plan.features;
-    const taxa =
-      plan.taxa_job == null ? 'taxa conforme o plano' : `Taxa de ${plan.taxa_job}% por job`;
-    return [
-      plan.limite_aceites == null || plan.limite_aceites <= 0
-        ? 'Aceites ilimitados de serviços'
-        : `Até ${plan.limite_aceites} aceites`,
-      taxa,
-      'Agenda, chat e painel de ganhos',
-    ];
+    const key = planMetaKey(plan.codigo);
+    return buildPlanFeatures(key, plan.taxa_job, plan.limite_aceites);
+  }
+
+  function applyTrialFromPlanRows(rows) {
+    if (!Array.isArray(rows) || !rows.length) return;
+    const trialRow = rows.find((r) => {
+      const c = String(r.codigo || r.nome || '').toLowerCase();
+      return c.includes('trial');
+    });
+    if (!trialRow) return;
+    const trial = cfg.trialAssinatura || {};
+    if (trialRow.trial_dias != null) trial.trial_dias = Number(trialRow.trial_dias);
+    if (trialRow.trial_aceites != null) trial.trial_aceites = Number(trialRow.trial_aceites);
+    if (trialRow.limite_aceites != null) trial.trial_aceites = Number(trialRow.limite_aceites);
+    const t = extractTaxaFromRow(trialRow);
+    if (cfg.prioridadeTaxaSupabase && planosTaxaColumnAvailable && t != null) {
+      trial.taxa_job = t;
+    }
+    cfg.trialAssinatura = trial;
   }
 
   function isFeaturedPlan(plan) {
@@ -438,25 +476,54 @@
   }
 
   async function fetchPlanosFromSupabase(url, key) {
-    const baseSelect =
-      'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem,taxa_job';
     const headers = {
       apikey: key,
       Authorization: `Bearer ${key}`,
       Accept: 'application/json',
     };
-    const query = `select=${baseSelect}&status=eq.1&order=ordem.asc`;
-    let res = await fetch(`${url}/rest/v1/planos_assinatura?${query}`, { headers });
-    if (res.status === 400) {
-      const fallbackSelect =
-        'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem';
-      res = await fetch(`${url}/rest/v1/planos_assinatura?select=${fallbackSelect}&status=eq.1&order=ordem.asc`, {
-        headers,
-      });
+    const withTaxa =
+      'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem,taxa_job';
+    const withoutTaxa =
+      'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem';
+
+    async function request(select, statusFilter) {
+      const statusPart = statusFilter ? '&status=eq.1' : '';
+      const res = await fetch(
+        `${url}/rest/v1/planos_assinatura?select=${select}&order=ordem.asc${statusPart}`,
+        { headers }
+      );
+      return res;
     }
+
+    let res = await request(withTaxa, true);
+    if (res.status === 400) {
+      planosTaxaColumnAvailable = false;
+      res = await request(withoutTaxa, true);
+    } else if (res.ok) {
+      planosTaxaColumnAvailable = true;
+    }
+
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const rows = await res.json();
-    return Array.isArray(rows) ? rows : [];
+    let rows = await res.json();
+    if (!Array.isArray(rows)) rows = [];
+
+    if (!rows.length) {
+      let resAll = await request(withTaxa, false);
+      if (resAll.status === 400) {
+        planosTaxaColumnAvailable = false;
+        resAll = await request(withoutTaxa, false);
+      } else if (resAll.ok) {
+        planosTaxaColumnAvailable = true;
+      }
+      if (resAll.ok) {
+        const all = await resAll.json();
+        if (Array.isArray(all)) {
+          rows = all.filter((r) => r.status == null || Number(r.status) === 1);
+        }
+      }
+    }
+
+    return rows;
   }
 
   async function loadPlanosAssinatura() {
@@ -468,30 +535,18 @@
 
     if (!url || !key) {
       renderPlans(fallback);
+      renderTrialBanner();
       return;
     }
 
     try {
-      let rows = await fetchPlanosFromSupabase(url, key);
-      if (!rows.length) {
-        const headers = {
-          apikey: key,
-          Authorization: `Bearer ${key}`,
-          Accept: 'application/json',
-        };
-        const res = await fetch(
-          `${url}/rest/v1/planos_assinatura?select=id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem&order=ordem.asc`,
-          { headers }
-        );
-        if (res.ok) {
-          const all = await res.json();
-          if (Array.isArray(all)) rows = all.filter((r) => r.status == null || Number(r.status) === 1);
-        }
-      }
+      const rows = await fetchPlanosFromSupabase(url, key);
+      applyTrialFromPlanRows(rows);
       renderPlans(rows.length ? rows : fallback);
     } catch {
       renderPlans(fallback);
     }
+    renderTrialBanner();
   }
 
   function renderPorDentroGaleria() {
@@ -541,6 +596,5 @@
   }
 
   loadPlanosAssinatura();
-  renderTrialBanner();
   renderPorDentroGaleria();
 })();

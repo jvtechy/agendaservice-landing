@@ -24,8 +24,13 @@ window.AGENDASERVICE_CONFIG = {
     taxa_job: 20,
   },
   /** Incremente ao trocar PNGs em assets/ (cache do navegador e CDN). */
-  assetsVersion: '20260330',
-  /** Taxa por job (%) quando a coluna taxa_job não vier do Supabase. */
+  assetsVersion: '20260330-plans',
+  /**
+   * false (padrão): taxas exibidas vêm de taxaPorCodigo (20/16/12/5).
+   * true: usa taxa_job da tabela planos_assinatura quando a coluna existir.
+   */
+  prioridadeTaxaSupabase: false,
+  /** Taxa por job (%) — fonte oficial na landing quando prioridadeTaxaSupabase é false. */
   taxaPorCodigo: {
     trial: 20,
     essencial: 16,
