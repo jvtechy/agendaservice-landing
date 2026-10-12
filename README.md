@@ -73,7 +73,18 @@ Carrega `planos_assinatura` no Supabase quando houver dados (inclui `taxa_job` q
 
 A seção **Por Dentro** (`porDentroGaleria` em `js/config.js`) renderiza 3×3 telas (9 PNGs em `assets/`, nomes com `SERVICOS` sem cedilha): 4 de cliente, depois 5 de prestador.
 
-**Windows:** não use `git pull` se você já tem PNGs em `assets/` — o Git aborta com “untracked files would be overwritten”. Use `.\scripts\alinhar-branch.ps1` e depois `.\scripts\push-por-dentro-assets.ps1` para publicar as 9 imagens.
+**Windows:** não use `git pull` se você já tem PNGs em `assets/` — o Git aborta com “untracked files would be overwritten”.
+
+Se o `pull` ou o `push-por-dentro-assets.ps1` antigo (com `git merge`) falhar, rode **uma vez** (copie e cole no PowerShell na raiz do repo):
+
+```powershell
+git fetch origin
+git checkout origin/cursor/landing-planos-por-dentro-8972 -- scripts/
+git reset --mixed origin/cursor/landing-planos-por-dentro-8972
+.\scripts\push-por-dentro-assets.ps1
+```
+
+Ou: `.\scripts\desbloquear-pull.ps1` (depois do primeiro `git fetch` + `git checkout ... -- scripts/desbloquear-pull.ps1` se esse arquivo ainda nao existir localmente).
 CTAs: Web App com `?auth=register&plan=<codigo>`.
 
 ## Logo

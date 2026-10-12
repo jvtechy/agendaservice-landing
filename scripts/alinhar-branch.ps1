@@ -16,6 +16,10 @@ if ($current -ne $branch) {
   if ($LASTEXITCODE -ne 0) { git switch -c $branch "origin/$branch" }
 }
 
+Write-Host "Atualizando scripts/ do remoto..."
+git checkout "origin/$branch" -- scripts/
+if ($LASTEXITCODE -ne 0) { Write-Error "git checkout scripts falhou." }
+
 Write-Host "Alinhando $branch com origin/$branch (nao apaga PNGs em assets/)..."
 $ErrorActionPreference = "Continue"
 git reset --mixed "origin/$branch"
