@@ -7,21 +7,37 @@ $expected = [ordered]@{
   "CLIENTE_MENU_VERTICAL.png" = @("CLIENTE_MENU_VERTICAL")
   "CLIENTE_MEUS_AGENDAMENTOS.png" = @("CLIENTE_MEUS_AGENDAMENTOS")
   "CLIENTE_MEUS_PAGAMENTOS.png" = @("CLIENTE_MEUS_PAGAMENTOS")
-  "CLIENTE_SERVIÇOS_CONCLUIDOS.png" = @("CLIENTE_SERVIÇOS_CONCLUIDOS")
+  "CLIENTE_SERVIÇOS_CONCLUIDOS.png" = @("CLIENTE_SERVIÇOS_CONCLUIDOS", "CLIENTE_SERVICOS_CONCLUIDOS")
   "PRESTADOR_LOGADO.png" = @("PRESTADOR_LOGADO")
-  "PRESTADOR_SERVIÇOS_DISPONIVEIS.png" = @("PRESTADOR_SERVIÇOS_DISPONIVEIS")
-  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVIÇOS")
+  "PRESTADOR_SERVIÇOS_DISPONIVEIS.png" = @("PRESTADOR_SERVIÇOS_DISPONIVEIS", "PRESTADOR_SERVICOS_DISPONIVEIS")
+  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVIÇOS", "PRESTADOR_CALENDARIO_DE_SERVICOS")
   "PRESTADOR_MEUS_SERVICOS-MAPA.png" = @("PRESTADOR_MEUS_SERVICOS-MAPA", "PRESTADOR_MEUS_SERVIÇOS-MAPA")
   "PRESTADOR_MEUS_GANHOS.png" = @("PRESTADOR_MEUS_GANHOS")
 }
 
 $keepInRepo = @("logo.svg", "logo-icon.svg") + @($expected.Keys)
 
+function Normalize-AssetBaseName {
+  param([string]$Name)
+  $formD = $Name.Normalize([Text.NormalizationForm]::FormD)
+  $sb = New-Object System.Text.StringBuilder
+  foreach ($ch in $formD.ToCharArray()) {
+    if ([Globalization.CharUnicodeInfo]::GetUnicodeCategory($ch) -ne 'NonSpacingMark') {
+      $sb.Append($ch) | Out-Null
+    }
+  }
+  return $sb.ToString().ToUpperInvariant()
+}
+
 function Find-AssetByBaseName {
   param([System.IO.FileInfo[]]$Files, [string[]]$BaseNames)
+  $want = @{}
   foreach ($base in $BaseNames) {
-    $hit = $Files | Where-Object { $_.BaseName -eq $base } | Select-Object -First 1
-    if ($hit) { return $hit }
+    $want[Normalize-AssetBaseName $base] = $true
+  }
+  foreach ($f in $Files) {
+    $key = Normalize-AssetBaseName $f.BaseName
+    if ($want.ContainsKey($key)) { return $f }
   }
   return $null
 }

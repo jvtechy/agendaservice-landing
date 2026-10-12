@@ -32,15 +32,19 @@ while IFS= read -r path; do
   fi
 done < <(git ls-files 'assets/*' || true)
 
+norm_base() {
+  echo "$1" | iconv -f UTF-8 -t ASCII//TRANSLIT 2>/dev/null | tr '[:lower:]' '[:upper:]' | tr -cd 'A-Z0-9_-'
+}
+
 find_asset() {
   local patterns="$1"
   IFS='|' read -ra bases <<< "$patterns"
-  for base in "${bases[@]}"; do
-    for f in "$assets"/*; do
-      [[ -f "$f" ]] || continue
-      name=$(basename "$f")
-      stem="${name%.*}"
-      [[ "$stem" == "$base" ]] && { echo "$f"; return 0; }
+  for f in "$assets"/*; do
+    [[ -f "$f" ]] || continue
+    stem=$(basename "${f%.*}")
+    nfile=$(norm_base "$stem")
+    for base in "${bases[@]}"; do
+      [[ "$(norm_base "$base")" == "$nfile" ]] && { echo "$f"; return 0; }
     done
   done
   return 1
