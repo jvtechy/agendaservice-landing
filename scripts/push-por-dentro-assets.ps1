@@ -3,53 +3,82 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $branch = "cursor/landing-planos-por-dentro-8972"
 
-$expected = @(
-  "CLIENTE_MENU_VERTICAL.png",
-  "CLIENTE_MEUS_AGENDAMENTOS.png",
-  "CLIENTE_MEUS_PAGAMENTOS.png",
-  "CLIENTE_SERVIÇOS_CONCLUIDOS.png",
-  "PRESTADOR_LOGADO.png",
-  "PRESTADOR_SERVIÇOS_DISPONIVEIS.png",
-  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.png",
-  "PRESTADOR_MEUS_SERVICOS-MAPA.png",
-  "PRESTADOR_MEUS_GANHOS.png"
-)
-
-$assets = Join-Path $root "assets"
-$missing = @()
-foreach ($name in $expected) {
-  if (-not (Test-Path (Join-Path $assets $name))) { $missing += $name }
+# Nome canônico (como na landing) -> padrões aceitos no disco (Windows ignora maiúsculas)
+$expected = [ordered]@{
+  "CLIENTE_MENU_VERTICAL.png" = @("CLIENTE_MENU_VERTICAL.png", "CLIENTE_MENU_VERTICAL.PNG")
+  "CLIENTE_MEUS_AGENDAMENTOS.png" = @("CLIENTE_MEUS_AGENDAMENTOS.png", "CLIENTE_MEUS_AGENDAMENTOS.PNG")
+  "CLIENTE_MEUS_PAGAMENTOS.png" = @("CLIENTE_MEUS_PAGAMENTOS.png", "CLIENTE_MEUS_PAGAMENTOS.PNG")
+  "CLIENTE_SERVIÇOS_CONCLUIDOS.png" = @("CLIENTE_SERVIÇOS_CONCLUIDOS.png", "CLIENTE_SERVIÇOS_CONCLUIDOS.PNG")
+  "PRESTADOR_LOGADO.png" = @("PRESTADOR_LOGADO.png", "PRESTADOR_LOGADO.PNG")
+  "PRESTADOR_SERVIÇOS_DISPONIVEIS.png" = @("PRESTADOR_SERVIÇOS_DISPONIVEIS.png", "PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG")
+  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVIÇOS.png", "PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG")
+  "PRESTADOR_MEUS_SERVICOS-MAPA.png" = @(
+    "PRESTADOR_MEUS_SERVICOS-MAPA.png",
+    "PRESTADOR_MEUS_SERVICOS-MAPA.PNG",
+    "PRESTADOR_MEUS_SERVIÇOS-MAPA.png",
+    "PRESTADOR_MEUS_SERVIÇOS-MAPA.PNG"
+  )
+  "PRESTADOR_MEUS_GANHOS.png" = @("PRESTADOR_MEUS_GANHOS.png", "PRESTADOR_MEUS_GANHOS.PNG")
 }
+
+function Resolve-AssetPath {
+  param([string]$AssetsDir, [string[]]$Patterns)
+  foreach ($pattern in $Patterns) {
+    $full = Join-Path $AssetsDir $pattern
+    if (Test-Path -LiteralPath $full) { return $full }
+  }
+  $files = Get-ChildItem -LiteralPath $AssetsDir -File -ErrorAction SilentlyContinue
+  foreach ($pattern in $Patterns) {
+    $base = [System.IO.Path]::GetFileNameWithoutExtension($pattern)
+    $hit = $files | Where-Object { $_.BaseName -eq $base } | Select-Object -First 1
+    if ($hit) { return $hit.FullName }
+  }
+  return $null
+}
+
+$assetsDir = Join-Path $root "assets"
+if (-not (Test-Path $assetsDir)) {
+  Write-Error "Pasta não encontrada: $assetsDir"
+}
+
+$resolved = @{}
+$missing = @()
+foreach ($canonical in $expected.Keys) {
+  $path = Resolve-AssetPath -AssetsDir $assetsDir -Patterns $expected[$canonical]
+  if (-not $path) {
+    $missing += $canonical
+  } else {
+    $resolved[$canonical] = $path
+  }
+}
+
 if ($missing.Count) {
-  Write-Error "Arquivos ausentes em assets/: $($missing -join ', ')"
+  Write-Host "Arquivos em assets/ (para conferência):"
+  Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object { Write-Host "  - $($_.Name)" }
+  Write-Error "Faltando (nome canônico): $($missing -join ', ')"
 }
 
 Set-Location $root
 git fetch origin
 
-# Evita erro "local changes would be overwritten by merge" (PNG antigos .PNG vs branch novo)
-$stashName = "agendaservice-landing-assets-$(Get-Date -Format 'yyyyMMddHHmmss')"
-git stash push -u -m $stashName -- assets 2>$null
-
-git checkout $branch 2>$null
-if ($LASTEXITCODE -ne 0) {
-  git checkout -b $branch "origin/$branch"
-}
-git reset --hard "origin/$branch"
-
-# Restaura só os PNG da pasta assets do stash (se existir)
-$stashList = git stash list | Select-String $stashName
-if ($stashList) {
-  git checkout "stash@{0}" -- assets 2>$null
-  git stash drop "stash@{0}" 2>$null
+if (-not (git rev-parse --verify "origin/$branch" 2>$null)) {
+  Write-Error "Branch remoto não encontrado: origin/$branch"
 }
 
-# Garante que os 9 arquivos locais (já validados) entram no commit
-foreach ($name in $expected) {
-  git add -f (Join-Path "assets" $name)
+git switch -C $branch "origin/$branch"
+
+$staging = Join-Path $env:TEMP "agendaservice-por-dentro-staging"
+if (Test-Path $staging) { Remove-Item -Recurse -Force $staging }
+New-Item -ItemType Directory -Path $staging | Out-Null
+
+foreach ($canonical in $resolved.Keys) {
+  $src = $resolved[$canonical]
+  $dest = Join-Path $staging $canonical
+  Copy-Item -LiteralPath $src -Destination $dest -Force
+  git add -f $dest
+  git mv -f $dest (Join-Path "assets" $canonical)
 }
 
-# Remove legado se ainda estiver rastreado
 $legacy = @(
   "assets/CLIENTE_MEUS_AGENDAMENTOS.PNG",
   "assets/CLIENTE_SERVIÇOS_CONCLUIDOS.PNG",
@@ -64,6 +93,8 @@ foreach ($path in $legacy) {
   git rm -f --ignore-unmatch $path 2>$null | Out-Null
 }
 
+Remove-Item -Recurse -Force $staging -ErrorAction SilentlyContinue
+
 git status
 $pending = git diff --cached --name-only
 if (-not $pending) {
@@ -73,4 +104,4 @@ if (-not $pending) {
 
 git commit -m "assets: atualiza 9 capturas da seção Por Dentro"
 git push -u origin $branch
-Write-Host "OK — imagens enviadas para GitHub."
+Write-Host "OK — imagens enviadas para GitHub no branch $branch."
