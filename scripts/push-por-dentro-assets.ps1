@@ -1,17 +1,16 @@
-# Copia as 9 capturas de assets/ e envia para o branch da landing (execute na raiz do repo).
+# Envia as 9 capturas de assets/ para o branch da landing (execute na raiz do repo).
 $ErrorActionPreference = "Stop"
-$root = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-if (-not (Test-Path (Join-Path $root ".git"))) { $root = Split-Path $PSScriptRoot -Parent }
+$root = Split-Path $PSScriptRoot -Parent
 
 $expected = @(
-  "CLIENTE_MEUS_AGENDAMENTOS.PNG",
-  "CLIENTE_MEUS_AGENDAMENTOS-2.PNG",
-  "CLIENTE_MEUS_PAGAMENTOS.PNG",
-  "CLIENTE_SERVIÇOS_CONCLUIDOS.PNG",
-  "PRESTADOR_LOGADO.PNG",
-  "PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG",
-  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG",
-  "PRESTADOR_MEUS_SERVICOS-MAPA.PNG",
+  "CLIENTE_MENU_VERTICAL.png",
+  "CLIENTE_MEUS_AGENDAMENTOS.png",
+  "CLIENTE_MEUS_PAGAMENTOS.png",
+  "CLIENTE_SERVIÇOS_CONCLUIDOS.png",
+  "PRESTADOR_LOGADO.png",
+  "PRESTADOR_SERVIÇOS_DISPONIVEIS.png",
+  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.png",
+  "PRESTADOR_MEUS_SERVICOS-MAPA.png",
   "PRESTADOR_MEUS_GANHOS.png"
 )
 
@@ -26,8 +25,22 @@ if ($missing.Count) {
 
 Set-Location $root
 git fetch origin
-git checkout cursor/landing-planos-por-dentro-8972
+git checkout cursor/landing-planos-por-dentro-8972 2>$null
 if ($LASTEXITCODE -ne 0) { git checkout -b cursor/landing-planos-por-dentro-8972 }
+
+# Remove capturas antigas (extensão .PNG / screenshots legados)
+$legacy = @(
+  "assets/CLIENTE_MEUS_AGENDAMENTOS.PNG",
+  "assets/CLIENTE_SERVIÇOS_CONCLUIDOS.PNG",
+  "assets/PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG",
+  "assets/PRESTADOR_MEUS_SERVICOS-MAPA.PNG",
+  "assets/PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG",
+  "assets/screenshot-cliente.png",
+  "assets/screenshot-prestador.png"
+)
+foreach ($path in $legacy) {
+  if (Test-Path (Join-Path $root $path)) { git rm -f $path 2>$null }
+}
 
 foreach ($name in $expected) {
   git add -f (Join-Path "assets" $name)

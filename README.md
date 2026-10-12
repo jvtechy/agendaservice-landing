@@ -71,7 +71,7 @@ A seção `#planos` espelha a tela **Minha Assinatura** do Web App (Dev):
 O **Trial** aparece como faixa de status (como em Minha Assinatura no app), não como card de compra.
 Carrega `planos_assinatura` no Supabase quando houver dados (inclui `taxa_job` quando a coluna existir); senão usa `planosAssinaturaFallback` e `taxaPorCodigo` em `js/config.js`.
 
-A seção **Por Dentro** (`porDentroGaleria` em `js/config.js`) renderiza 3×3 telas (9 PNGs em `assets/`): 4 de cliente, depois 5 de prestador — inclui `CLIENTE_MEUS_AGENDAMENTOS-2`, `CLIENTE_MEUS_PAGAMENTOS` e `PRESTADOR_LOGADO`.
+A seção **Por Dentro** (`porDentroGaleria` em `js/config.js`) renderiza 3×3 telas (9 PNGs em `assets/`): 4 de cliente, depois 5 de prestador. Envio em lote: `.\scripts\push-por-dentro-assets.ps1` (Windows).
 CTAs: Web App com `?auth=register&plan=<codigo>`.
 
 ## Logo

@@ -37,50 +37,50 @@ window.AGENDASERVICE_CONFIG = {
   porDentroGaleria: [
     {
       perfil: 'cliente',
+      titulo: 'Menu do cliente',
+      arquivo: 'CLIENTE_MENU_VERTICAL.png',
+      descricao: 'Navegação rápida no painel do cliente após o login.',
+    },
+    {
+      perfil: 'cliente',
       titulo: 'Meus agendamentos',
-      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS.PNG',
+      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS.png',
       descricao: 'Lista de pedidos em andamento — compare prestadores e escolha quem vai atender.',
     },
     {
       perfil: 'cliente',
-      titulo: 'Detalhe do agendamento',
-      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS-2.PNG',
-      descricao: 'Visualize datas, valores e status antes de confirmar o profissional.',
-    },
-    {
-      perfil: 'cliente',
       titulo: 'Meus pagamentos',
-      arquivo: 'CLIENTE_MEUS_PAGAMENTOS.PNG',
+      arquivo: 'CLIENTE_MEUS_PAGAMENTOS.png',
       descricao: 'Pagamentos via PIX com transparência em cada etapa do serviço.',
     },
     {
       perfil: 'cliente',
       titulo: 'Serviços concluídos',
-      arquivo: 'CLIENTE_SERVIÇOS_CONCLUIDOS.PNG',
+      arquivo: 'CLIENTE_SERVIÇOS_CONCLUIDOS.png',
       descricao: 'Histórico de serviços finalizados, avaliações e liberação de pagamento.',
     },
     {
       perfil: 'prestador',
       titulo: 'Prestador logado',
-      arquivo: 'PRESTADOR_LOGADO.PNG',
+      arquivo: 'PRESTADOR_LOGADO.png',
       descricao: 'Painel do profissional após login — visão geral da operação.',
     },
     {
       perfil: 'prestador',
       titulo: 'Serviços disponíveis',
-      arquivo: 'PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG',
+      arquivo: 'PRESTADOR_SERVIÇOS_DISPONIVEIS.png',
       descricao: 'Oportunidades na região após o cliente escolher o prestador.',
     },
     {
       perfil: 'prestador',
       titulo: 'Calendário de serviços',
-      arquivo: 'PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG',
+      arquivo: 'PRESTADOR_CALENDARIO_DE_SERVIÇOS.png',
       descricao: 'Agenda do dia e da semana com serviços confirmados.',
     },
     {
       perfil: 'prestador',
       titulo: 'Meus serviços — mapa',
-      arquivo: 'PRESTADOR_MEUS_SERVICOS-MAPA.PNG',
+      arquivo: 'PRESTADOR_MEUS_SERVICOS-MAPA.png',
       descricao: 'Mapa com localização dos atendimentos para planejar o deslocamento.',
     },
     {
