@@ -20,7 +20,8 @@ declare -A expected=(
 cd "$root"
 git fetch origin
 git switch "$branch" 2>/dev/null || git switch -c "$branch" "origin/$branch"
-git merge --ff-only "origin/$branch" 2>/dev/null || git reset --mixed "origin/$branch"
+# Sem git pull/merge: PNGs locais nao rastreados abortam o merge no Windows.
+git reset --mixed "origin/$branch"
 
 while IFS= read -r path; do
   base=$(basename "$path")

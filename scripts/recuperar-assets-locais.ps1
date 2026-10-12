@@ -1,38 +1,49 @@
 # Recupera PNGs apagados do disco (git remove arquivos rastreados ao trocar de branch).
-# Restaura da main e renomeia para SERVICOS (sem cedilha). Execute na raiz do repo.
+# Restaura da main (nomes antigos) e renomeia para SERVICOS (sem cedilha). Execute na raiz do repo.
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 Set-Location $root
 
-Write-Host "Restaurando capturas da branch main e renomeando para SERVICOS..."
-git fetch origin
+function ConvertTo-PorDentroFileName {
+  param([string]$FileName)
+  $base = [System.IO.Path]::GetFileNameWithoutExtension($FileName)
+  $formD = $base.Normalize([Text.NormalizationForm]::FormD)
+  $sb = New-Object System.Text.StringBuilder
+  foreach ($ch in $formD.ToCharArray()) {
+    if ([Globalization.CharUnicodeInfo]::GetUnicodeCategory($ch) -ne 'NonSpacingMark') {
+      $null = $sb.Append($ch)
+    }
+  }
+  $ascii = $sb.ToString() -replace 'Ç', 'C' -replace 'Ã', 'A'
+  $ascii = [regex]::Replace($ascii, 'SERVI[^C_]*C?OS', 'SERVICOS', 'IgnoreCase')
+  return ($ascii + '.png')
+}
 
-$fromMain = @(
-  "assets/CLIENTE_MEUS_AGENDAMENTOS.PNG",
-  "assets/CLIENTE_SERVIÇOS_CONCLUIDOS.PNG",
-  "assets/PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG",
-  "assets/PRESTADOR_MEUS_GANHOS.png",
-  "assets/PRESTADOR_MEUS_SERVICOS-MAPA.PNG",
-  "assets/PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG",
-  "assets/logo.svg",
-  "assets/logo-icon.svg"
-)
+Write-Host "Restaurando capturas da branch main e renomeando para SERVICOS..."
+$prev = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+git fetch origin
+$ErrorActionPreference = $prev
+
+$fromMain = @(git ls-tree -r --name-only origin/main -- assets/ | Where-Object {
+    $_ -match '\.(png|PNG)$' -and $_ -notmatch 'screenshot-'
+  })
+if (-not $fromMain.Count) {
+  Write-Error "Nenhum PNG encontrado em origin/main em assets/"
+}
+
 git checkout origin/main -- $fromMain
 
 $assetsDir = Join-Path $root "assets"
-$renames = @{
-  "CLIENTE_MEUS_AGENDAMENTOS.PNG" = "CLIENTE_MEUS_AGENDAMENTOS.png"
-  "CLIENTE_SERVIÇOS_CONCLUIDOS.PNG" = "CLIENTE_SERVICOS_CONCLUIDOS.png"
-  "PRESTADOR_CALENDARIO_DE_SERVIÇOS.PNG" = "PRESTADOR_CALENDARIO_DE_SERVICOS.png"
-  "PRESTADOR_MEUS_SERVICOS-MAPA.PNG" = "PRESTADOR_MEUS_SERVICOS-MAPA.png"
-  "PRESTADOR_SERVIÇOS_DISPONIVEIS.PNG" = "PRESTADOR_SERVICOS_DISPONIVEIS.png"
-}
-foreach ($pair in $renames.GetEnumerator()) {
-  $src = Join-Path $assetsDir $pair.Key
-  $dest = Join-Path $assetsDir $pair.Value
-  if (Test-Path -LiteralPath $src) {
-    Move-Item -LiteralPath $src -Destination $dest -Force
+Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object {
+  if ($_.Extension -notmatch '^\.(png|PNG)$') { return }
+  $targetName = ConvertTo-PorDentroFileName $_.Name
+  if ($_.Name -ceq $targetName) { return }
+  $dest = Join-Path $assetsDir $targetName
+  if (Test-Path -LiteralPath $dest) {
+    Remove-Item -LiteralPath $dest -Force
   }
+  Move-Item -LiteralPath $_.FullName -Destination $dest -Force
 }
 
 Write-Host ""

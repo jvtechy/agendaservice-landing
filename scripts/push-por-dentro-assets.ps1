@@ -18,6 +18,16 @@ $expected = [ordered]@{
 
 $keepInRepo = @("logo.svg", "logo-icon.svg") + @($expected.Keys)
 
+function Invoke-GitQuiet {
+  param([Parameter(ValueFromRemainingArguments = $true)][string[]]$GitArgs)
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  & git @GitArgs
+  $code = $LASTEXITCODE
+  $ErrorActionPreference = $prev
+  return $code
+}
+
 function Find-AssetByBaseName {
   param([System.IO.FileInfo[]]$Files, [string[]]$BaseNames)
   foreach ($base in $BaseNames) {
@@ -33,7 +43,9 @@ if (-not (Test-Path $assetsDir)) {
 }
 
 Set-Location $root
-git fetch origin
+if ((Invoke-GitQuiet fetch origin) -ne 0) {
+  Write-Error "git fetch origin falhou."
+}
 
 if (-not (git rev-parse --verify "origin/$branch" 2>$null)) {
   Write-Error "Branch remoto nao encontrado: origin/$branch"
@@ -41,22 +53,24 @@ if (-not (git rev-parse --verify "origin/$branch" 2>$null)) {
 
 $current = git branch --show-current
 if ($current -ne $branch) {
-  git switch $branch 2>$null
-  if ($LASTEXITCODE -ne 0) {
-    git switch -c $branch "origin/$branch"
+  if ((Invoke-GitQuiet switch $branch) -ne 0) {
+    if ((Invoke-GitQuiet switch -c $branch "origin/$branch") -ne 0) {
+      Write-Error "Nao foi possivel mudar para o branch $branch"
+    }
   }
 }
-git merge -q --ff-only "origin/$branch" 2>$null
-if ($LASTEXITCODE -ne 0) {
-  Write-Host "Alinhando com origin/$branch (sem apagar arquivos nao rastreados)..."
-  git reset --mixed "origin/$branch"
+
+# Nao use git pull / merge: PNGs locais nao rastreados (mesmo nome do remoto) abortam o merge.
+Write-Host "Alinhando com origin/$branch (mantem seus arquivos em assets/)..."
+if ((Invoke-GitQuiet reset --mixed "origin/$branch") -ne 0) {
+  Write-Error "git reset --mixed falhou."
 }
 
 git ls-files "assets/*" | ForEach-Object {
   $name = Split-Path $_ -Leaf
   if ($keepInRepo -contains $name) { return }
   if ($name -match '\.(png|PNG)$') {
-    git rm -f --ignore-unmatch $_ 2>$null | Out-Null
+    Invoke-GitQuiet rm -f --ignore-unmatch $_ | Out-Null
   }
 }
 
@@ -76,7 +90,9 @@ foreach ($canonical in $expected.Keys) {
   if ($srcFull -ne $destFull) {
     Copy-Item -LiteralPath $source.FullName -Destination $dest -Force
   }
-  git add -f -- "assets/$canonical"
+  if ((Invoke-GitQuiet add -f -- "assets/$canonical") -ne 0) {
+    Write-Error "git add falhou para assets/$canonical"
+  }
 }
 
 if ($missing.Count) {
@@ -90,7 +106,7 @@ Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object {
   if ($keepInRepo -contains $_.Name) { return }
   if ($_.Extension -match '^\.(png|PNG)$') {
     Remove-Item -LiteralPath $_.FullName -Force -ErrorAction SilentlyContinue
-    git rm -f --ignore-unmatch "assets/$($_.Name)" 2>$null | Out-Null
+    Invoke-GitQuiet rm -f --ignore-unmatch "assets/$($_.Name)" | Out-Null
   }
 }
 
@@ -101,6 +117,10 @@ if (-not $pending) {
   exit 0
 }
 
-git commit -m "assets: publica 9 capturas da secao Por Dentro"
-git push -u origin $branch
+if ((Invoke-GitQuiet commit -m "assets: publica 9 capturas da secao Por Dentro") -ne 0) {
+  Write-Error "git commit falhou."
+}
+if ((Invoke-GitQuiet push -u origin $branch) -ne 0) {
+  Write-Error "git push falhou."
+}
 Write-Host "OK - 9 imagens publicadas no GitHub (branch $branch)."
