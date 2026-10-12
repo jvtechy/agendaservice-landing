@@ -1,4 +1,5 @@
 # Envia as 9 capturas de assets/ para o branch da landing (execute na raiz do repo).
+# Salvo em ASCII para evitar erro de encoding no Windows PowerShell.
 $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $branch = "cursor/landing-planos-por-dentro-8972"
@@ -26,7 +27,7 @@ function Find-AssetByBaseName {
 
 $assetsDir = Join-Path $root "assets"
 if (-not (Test-Path $assetsDir)) {
-  Write-Error "Pasta não encontrada: $assetsDir"
+  Write-Error "Pasta nao encontrada: $assetsDir"
 }
 
 $allFiles = Get-ChildItem -LiteralPath $assetsDir -File
@@ -36,7 +37,7 @@ Set-Location $root
 git fetch origin
 
 if (-not (git rev-parse --verify "origin/$branch" 2>$null)) {
-  Write-Error "Branch remoto não encontrado: origin/$branch (rode: git fetch origin)"
+  Write-Error "Branch remoto nao encontrado: origin/$branch (rode: git fetch origin)"
 }
 
 git switch -C $branch "origin/$branch"
@@ -54,7 +55,8 @@ foreach ($canonical in $expected.Keys) {
 }
 
 if ($missing.Count) {
-  Write-Host "`nArquivos atuais em assets/:"
+  Write-Host ""
+  Write-Host "Arquivos atuais em assets/:"
   $allFiles | ForEach-Object { Write-Host "  - $($_.Name)" }
   Write-Error "Faltando (base do nome): $($missing -join ', ')"
 }
@@ -76,10 +78,10 @@ foreach ($path in $legacy) {
 git status
 $pending = git diff --cached --name-only
 if (-not $pending) {
-  Write-Host "Nada novo para commitar (imagens já estão no GitHub?)."
+  Write-Host "Nada novo para commitar (imagens ja estao no GitHub?)."
   exit 0
 }
 
-git commit -m "assets: atualiza 9 capturas da seção Por Dentro"
+git commit -m "assets: atualiza 9 capturas da secao Por Dentro"
 git push -u origin $branch
-Write-Host "OK — imagens enviadas para GitHub no branch $branch."
+Write-Host "OK - imagens enviadas para GitHub no branch $branch."
