@@ -241,6 +241,8 @@
 
   let planosTaxaColumnAvailable = false;
 
+  const PLAN_KEYS = ['essencial', 'profissional', 'premium', 'trial'];
+
   const PLAN_TAGLINES = {
     essencial: 'Menos que um Sanduíche',
     profissional: 'Custa menos que uma mini pizza por mês',
@@ -301,8 +303,8 @@
   }
 
   function planMetaKey(codigo) {
-    const code = String(codigo || '');
-    return Object.keys(PLAN_META).find((k) => code.includes(k)) || null;
+    const code = String(codigo || '').toLowerCase();
+    return PLAN_KEYS.find((k) => code.includes(k)) || null;
   }
 
   function normalizePlan(raw) {
@@ -543,7 +545,8 @@
       const rows = await fetchPlanosFromSupabase(url, key);
       applyTrialFromPlanRows(rows);
       renderPlans(rows.length ? rows : fallback);
-    } catch {
+    } catch (err) {
+      console.warn('planos_assinatura:', err);
       renderPlans(fallback);
     }
     renderTrialBanner();

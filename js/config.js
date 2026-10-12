@@ -24,7 +24,7 @@ window.AGENDASERVICE_CONFIG = {
     taxa_job: 20,
   },
   /** Incremente ao trocar PNGs em assets/ (cache do navegador e CDN). */
-  assetsVersion: '20260330-plans',
+  assetsVersion: '20260330-plans2',
   /**
    * false (padrão): taxas exibidas vêm de taxaPorCodigo (20/16/12/5).
    * true: usa taxa_job da tabela planos_assinatura quando a coluna existir.
