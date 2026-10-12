@@ -9,11 +9,11 @@ declare -A expected=(
   ["CLIENTE_MENU_VERTICAL.png"]="CLIENTE_MENU_VERTICAL"
   ["CLIENTE_MEUS_AGENDAMENTOS.png"]="CLIENTE_MEUS_AGENDAMENTOS"
   ["CLIENTE_MEUS_PAGAMENTOS.png"]="CLIENTE_MEUS_PAGAMENTOS"
-  ["CLIENTE_SERVIÇOS_CONCLUIDOS.png"]="CLIENTE_SERVIÇOS_CONCLUIDOS"
+  ["CLIENTE_SERVICOS_CONCLUIDOS.png"]="CLIENTE_SERVICOS_CONCLUIDOS"
   ["PRESTADOR_LOGADO.png"]="PRESTADOR_LOGADO"
-  ["PRESTADOR_SERVIÇOS_DISPONIVEIS.png"]="PRESTADOR_SERVIÇOS_DISPONIVEIS"
-  ["PRESTADOR_CALENDARIO_DE_SERVIÇOS.png"]="PRESTADOR_CALENDARIO_DE_SERVIÇOS"
-  ["PRESTADOR_MEUS_SERVICOS-MAPA.png"]="PRESTADOR_MEUS_SERVICOS-MAPA|PRESTADOR_MEUS_SERVIÇOS-MAPA"
+  ["PRESTADOR_SERVICOS_DISPONIVEIS.png"]="PRESTADOR_SERVICOS_DISPONIVEIS"
+  ["PRESTADOR_CALENDARIO_DE_SERVICOS.png"]="PRESTADOR_CALENDARIO_DE_SERVICOS"
+  ["PRESTADOR_MEUS_SERVICOS-MAPA.png"]="PRESTADOR_MEUS_SERVICOS-MAPA"
   ["PRESTADOR_MEUS_GANHOS.png"]="PRESTADOR_MEUS_GANHOS"
 )
 
@@ -32,27 +32,22 @@ while IFS= read -r path; do
   fi
 done < <(git ls-files 'assets/*' || true)
 
-norm_base() {
-  echo "$1" | iconv -f UTF-8 -t ASCII//TRANSLIT 2>/dev/null | tr '[:lower:]' '[:upper:]' | tr -cd 'A-Z0-9_-'
-}
-
 find_asset() {
-  local patterns="$1"
-  IFS='|' read -ra bases <<< "$patterns"
+  local base="$1"
   for f in "$assets"/*; do
     [[ -f "$f" ]] || continue
     stem=$(basename "${f%.*}")
-    nfile=$(norm_base "$stem")
-    for base in "${bases[@]}"; do
-      [[ "$(norm_base "$base")" == "$nfile" ]] && { echo "$f"; return 0; }
-    done
+    shopt -s nocasematch
+    [[ "$stem" == "$base" ]] && { shopt -u nocasematch; echo "$f"; return 0; }
+    shopt -u nocasematch
   done
   return 1
 }
 
 missing=()
 for canonical in "${!expected[@]}"; do
-  if src=$(find_asset "${expected[$canonical]}"); then
+  base="${expected[$canonical]}"
+  if src=$(find_asset "$base"); then
     dest="$assets/$canonical"
     if [[ "$(readlink -f "$src")" != "$(readlink -f "$dest" 2>/dev/null || echo "")" ]]; then
       cp -f "$src" "$dest"
@@ -77,6 +72,7 @@ for f in "$assets"/*; do
   for k in "${!expected[@]}"; do [[ "$base" == "$k" ]] && keep=1; done
   if [[ $keep -eq 0 && "$base" =~ \.(png|PNG)$ ]]; then
     rm -f "$f"
+    git rm -f --ignore-unmatch "assets/$base" 2>/dev/null || true
   fi
 done
 

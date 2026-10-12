@@ -3,43 +3,26 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path $PSScriptRoot -Parent
 $branch = "cursor/landing-planos-por-dentro-8972"
 
-# Nomes ASCII no Git (evita mojibake SERVICOS/SERVIÇOS no Windows)
+# Nomes oficiais em assets/ (ASCII: SERVICOS, sem cedilha)
 $expected = [ordered]@{
   "CLIENTE_MENU_VERTICAL.png" = @("CLIENTE_MENU_VERTICAL")
   "CLIENTE_MEUS_AGENDAMENTOS.png" = @("CLIENTE_MEUS_AGENDAMENTOS")
   "CLIENTE_MEUS_PAGAMENTOS.png" = @("CLIENTE_MEUS_PAGAMENTOS")
-  "CLIENTE_SERVICOS_CONCLUIDOS.png" = @("CLIENTE_SERVICOS_CONCLUIDOS", "CLIENTE_SERVIÇOS_CONCLUIDOS", "CLIENTE_SERVIÃOS_CONCLUIDOS")
+  "CLIENTE_SERVICOS_CONCLUIDOS.png" = @("CLIENTE_SERVICOS_CONCLUIDOS")
   "PRESTADOR_LOGADO.png" = @("PRESTADOR_LOGADO")
-  "PRESTADOR_SERVICOS_DISPONIVEIS.png" = @("PRESTADOR_SERVICOS_DISPONIVEIS", "PRESTADOR_SERVIÇOS_DISPONIVEIS")
-  "PRESTADOR_CALENDARIO_DE_SERVICOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVICOS", "PRESTADOR_CALENDARIO_DE_SERVIÇOS")
-  "PRESTADOR_MEUS_SERVICOS-MAPA.png" = @("PRESTADOR_MEUS_SERVICOS-MAPA", "PRESTADOR_MEUS_SERVIÇOS-MAPA")
+  "PRESTADOR_SERVICOS_DISPONIVEIS.png" = @("PRESTADOR_SERVICOS_DISPONIVEIS")
+  "PRESTADOR_CALENDARIO_DE_SERVICOS.png" = @("PRESTADOR_CALENDARIO_DE_SERVICOS")
+  "PRESTADOR_MEUS_SERVICOS-MAPA.png" = @("PRESTADOR_MEUS_SERVICOS-MAPA")
   "PRESTADOR_MEUS_GANHOS.png" = @("PRESTADOR_MEUS_GANHOS")
 }
 
 $keepInRepo = @("logo.svg", "logo-icon.svg") + @($expected.Keys)
 
-function Normalize-AssetBaseName {
-  param([string]$Name)
-  $formD = $Name.Normalize([Text.NormalizationForm]::FormD)
-  $sb = New-Object System.Text.StringBuilder
-  foreach ($ch in $formD.ToCharArray()) {
-    if ([Globalization.CharUnicodeInfo]::GetUnicodeCategory($ch) -ne 'NonSpacingMark') {
-      $sb.Append($ch) | Out-Null
-    }
-  }
-  return ($sb.ToString().ToUpperInvariant() -replace 'Ç', 'C' -replace 'Ã', 'A')
-}
-
 function Find-AssetByBaseName {
   param([System.IO.FileInfo[]]$Files, [string[]]$BaseNames)
-  $want = @{}
   foreach ($base in $BaseNames) {
-    $wantKey = Normalize-AssetBaseName $base
-    $want[$wantKey] = $true
-  }
-  foreach ($f in $Files) {
-    $fileKey = Normalize-AssetBaseName $f.BaseName
-    if ($want.ContainsKey($fileKey)) { return $f }
+    $hit = $Files | Where-Object { $_.BaseName -ieq $base } | Select-Object -First 1
+    if ($hit) { return $hit }
   }
   return $null
 }
@@ -100,7 +83,7 @@ if ($missing.Count) {
   Write-Host ""
   Write-Host "Arquivos em assets/:"
   Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object { Write-Host "  - $($_.Name)" }
-  Write-Error "Faltam $($missing.Count) imagem(ns)."
+  Write-Error "Faltam $($missing.Count) imagem(ns). Esperado: $($expected.Keys -join ', ')"
 }
 
 Get-ChildItem -LiteralPath $assetsDir -File | ForEach-Object {
