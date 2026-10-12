@@ -87,7 +87,7 @@ function Align-BranchToOrigin {
       if ($sw2.Code -ne 0) {
         $sw3 = Invoke-Git switch -c $branch $targetRev
         if ($sw3.Code -ne 0) {
-          Write-Error "Nao foi possivel mudar para $branch:`n$($sw.Out)`n$($sw2.Out)`n$($sw3.Out)"
+          Write-Error "Nao foi possivel mudar para ${branch}:`n$($sw.Out)`n$($sw2.Out)`n$($sw3.Out)"
         }
       }
     }
