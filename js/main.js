@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const cfg = window.AGENDASERVICE_CONFIG || { appUrl: 'http://localhost:3000' };
+  const cfg = window.AGENDASERVICE_CONFIG || { appUrl: 'https://agendaservi.com.br' };
 
   function appLink(path, params) {
     const base = (cfg.appUrl || '').replace(/\/$/, '');

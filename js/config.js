@@ -4,7 +4,7 @@
  * supabase*: mesma base do app — planos_assinatura / assinaturas_prestador.
  */
 window.AGENDASERVICE_CONFIG = {
-  appUrl: 'https://agendaservice.vercel.app',
+  appUrl: 'https://agendaservi.com.br',
   whatsappSuporte: '5531998163074',
   emailContato: 'contato@jvtechy.com.br',
   whatsappLeads: '',
