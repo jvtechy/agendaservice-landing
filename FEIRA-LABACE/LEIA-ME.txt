@@ -1,0 +1,11 @@
+Pasta FEIRA-LABACE (equivalente a C:\FEIRA-LABACE no Windows)
+
+Copie todo o conteúdo desta pasta para:
+  C:\FEIRA-LABACE
+
+Estrutura:
+  originais/   — fotos extraídas do backup, sem alteração
+  restauradas/ — versões com correção de ruído, contraste e cor
+  videos/      — arquivos .mov do backup (sem processamento)
+
+Restauração aplicada nas imagens .jpg (pipeline clássico, fiel ao original).
