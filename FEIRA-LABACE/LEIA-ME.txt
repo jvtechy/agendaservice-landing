@@ -6,6 +6,8 @@ Copie todo o conteúdo desta pasta para:
 Estrutura:
   originais/   — fotos extraídas do backup, sem alteração
   restauradas/ — versões com correção de ruído, contraste e cor
-  videos/      — arquivos .mov do backup (sem processamento)
+  videos/              — arquivos .mov do backup (sem processamento)
+  videos_restaurados/  — vídeos GEDC0056–0060 em MP4 (ruído, cor, nitidez e áudio)
 
 Restauração aplicada nas imagens .jpg (pipeline clássico, fiel ao original).
+Vídeos restaurados: denoise, contraste/cor, leve nitidez, áudio com redução de ruído (H.264/AAC).
