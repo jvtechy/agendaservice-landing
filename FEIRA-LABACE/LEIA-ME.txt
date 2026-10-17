@@ -3,6 +3,13 @@ Pasta FEIRA-LABACE (equivalente a C:\FEIRA-LABACE no Windows)
 Copie todo o conteúdo desta pasta para:
   C:\FEIRA-LABACE
 
+Baixar tudo do GitHub (Windows):
+  1) Clone o repositório agendaservice-landing (branch main), ou
+  2) Execute na raiz do repo: baixar-FEIRA-LABACE.cmd
+     (salva em C:\FEIRA-LABACE por padrão)
+  PowerShell: .\scripts\baixar-FEIRA-LABACE.ps1 -Destino "C:\FEIRA-LABACE"
+  Linux/macOS: ./scripts/baixar-FEIRA-LABACE.sh ~/FEIRA-LABACE
+
 Estrutura:
   originais/   — fotos extraídas do backup, sem alteração
   restauradas/     — versões clássicas (ruído, contraste e cor)
