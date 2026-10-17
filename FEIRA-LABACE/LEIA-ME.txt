@@ -5,9 +5,11 @@ Copie todo o conteúdo desta pasta para:
 
 Estrutura:
   originais/   — fotos extraídas do backup, sem alteração
-  restauradas/ — versões com correção de ruído, contraste e cor
+  restauradas/     — versões clássicas (ruído, contraste e cor)
+  restauradas_ia/  — versões com IA (mais nitidez e cores vivas)
   videos/              — arquivos .mov do backup (sem processamento)
   videos_restaurados/  — vídeos GEDC0056–0060 em MP4 (ruído, cor, nitidez e áudio)
 
-Restauração aplicada nas imagens .jpg (pipeline clássico, fiel ao original).
+Restauração clássica nas imagens .jpg (pipeline OpenCV, fiel ao original).
+Restauração IA em restauradas_ia/ (nitidez, cores e limpeza de artefatos; pode suavizar detalhes finos).
 Vídeos restaurados: denoise, contraste/cor, leve nitidez, áudio com redução de ruído (H.264/AAC).
