@@ -1,4 +1,4 @@
-h/* AgendaService Landing — custom styles (Tailwind via CDN) */
+/* AgendaService Landing — custom styles (Tailwind via CDN) */
 
 html {
   scroll-behavior: smooth;
@@ -81,6 +81,18 @@ body {
 
 #site-header .header-inner {
   flex-wrap: nowrap;
+}
+
+@media (max-width: 1279px) {
+  #site-header .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #site-header .header-actions {
+    margin-left: auto;
+  }
 }
 
 #site-header nav.site-nav {
