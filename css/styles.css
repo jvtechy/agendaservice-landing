@@ -1,4 +1,4 @@
-h/* AgendaService Landing — custom styles (Tailwind via CDN) */
+/* AgendaService Landing — custom styles (Tailwind via CDN) */
 
 html {
   scroll-behavior: smooth;
@@ -83,6 +83,18 @@ body {
   flex-wrap: nowrap;
 }
 
+@media (max-width: 1279px) {
+  #site-header .header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #site-header .header-actions {
+    margin-left: auto;
+  }
+}
+
 #site-header nav.site-nav {
   display: none;
   flex-wrap: nowrap;
@@ -116,6 +128,11 @@ body {
 
 #site-header .header-actions {
   flex-shrink: 0;
+  /* Nav is display:none below xl, so this must stay in column 3.
+     Otherwise it falls into the flexible middle track and the
+     hamburger sits near the center of the screen. */
+  grid-column: 3;
+  justify-self: end;
 }
 .phone-frame {
   background: linear-gradient(160deg, #2d2d2d 0%, #1a1a1a 100%);
