@@ -24,7 +24,7 @@ window.AGENDASERVICE_CONFIG = {
     taxa_job: 20,
   },
   /** Incremente ao trocar PNGs em assets/ (cache do navegador e CDN). */
-  assetsVersion: '20260330-plans2',
+  assetsVersion: '20261019-por-dentro-mobile2',
   /**
    * false (padrão): taxas exibidas vêm de taxaPorCodigo (20/16/12/5).
    * true: usa taxa_job da tabela planos_assinatura quando a coluna existir.
@@ -51,7 +51,7 @@ window.AGENDASERVICE_CONFIG = {
     {
       perfil: 'cliente',
       titulo: 'Meus agendamentos',
-      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS.png',
+      arquivo: 'CLIENTE_MEUS_AGENDAMENTOS-2.png',
       descricao: 'Lista de pedidos em andamento — compare prestadores e escolha quem vai atender.',
     },
     {
@@ -63,7 +63,7 @@ window.AGENDASERVICE_CONFIG = {
     {
       perfil: 'cliente',
       titulo: 'Serviços concluídos',
-      arquivo: 'CLIENTE_SERVICOS_CONCLUIDOS.png',
+      arquivo: 'CLIENTE_SERVICOS_CONCLUIDOS-2.png',
       descricao: 'Histórico de serviços finalizados, avaliações e liberação de pagamento.',
     },
     {
@@ -87,7 +87,7 @@ window.AGENDASERVICE_CONFIG = {
     {
       perfil: 'prestador',
       titulo: 'Meus serviços — mapa',
-      arquivo: 'PRESTADOR_MEUS_SERVICOS-MAPA.png',
+      arquivo: 'PRESTADOR_MEUS_SERVICOS-MAPA-2.png',
       descricao: 'Mapa com localização dos atendimentos para planejar o deslocamento.',
     },
     {
