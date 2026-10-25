@@ -268,7 +268,11 @@
   function resolveTaxaJob(raw, key) {
     const fromDb = extractTaxaFromRow(raw);
     const fromConfig = key && TAXA_POR_CODIGO[key] != null ? Number(TAXA_POR_CODIGO[key]) : null;
-    if (cfg.prioridadeTaxaSupabase && planosTaxaColumnAvailable && fromDb != null) {
+    if (
+      planosTaxaColumnAvailable &&
+      fromDb != null &&
+      (cfg.prioridadeTaxaSupabase || fromConfig == null)
+    ) {
       return fromDb;
     }
     if (fromConfig != null) return fromConfig;
@@ -307,6 +311,35 @@
     return PLAN_KEYS.find((k) => code.includes(k)) || null;
   }
 
+  function isPlanRowActive(row) {
+    if (!row || typeof row !== 'object') return false;
+    const s = row.status;
+    if (s == null || s === '') return true;
+    if (s === true) return true;
+    if (s === false) return false;
+    const str = String(s).toLowerCase().trim();
+    if (['1', 'true', 'ativo', 'active', 'sim', 's'].includes(str)) return true;
+    if (['0', 'false', 'inativo', 'inactive', 'nao', 'não', 'n'].includes(str)) return false;
+    const n = Number(s);
+    return !Number.isNaN(n) && n === 1;
+  }
+
+  function isTrialPlanRow(row) {
+    const c = String(row?.codigo || row?.nome || '').toLowerCase();
+    return c.includes('trial');
+  }
+
+  function extractPrecoAnual(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    const cols = ['preco_anual', 'precoAnual', 'valor_anual', 'preco'];
+    for (const col of cols) {
+      if (raw[col] == null || raw[col] === '') continue;
+      const n = Number(raw[col]);
+      if (!Number.isNaN(n)) return n;
+    }
+    return null;
+  }
+
   function normalizePlan(raw) {
     const codigo = String(raw.codigo || raw.nome || '')
       .toLowerCase()
@@ -323,17 +356,22 @@
           : null
         : Number(raw.limite_aceites);
 
+    const precoDb = extractPrecoAnual(raw);
+    const descricaoDb =
+      raw.descricao != null && String(raw.descricao).trim() !== '' ? String(raw.descricao).trim() : '';
+    const taglineDb =
+      raw.tagline != null && String(raw.tagline).trim() !== ''
+        ? String(raw.tagline).trim()
+        : raw.subtitulo != null && String(raw.subtitulo).trim() !== ''
+          ? String(raw.subtitulo).trim()
+          : '';
+
     return {
       codigo: key || codigo,
       nome: raw.nome || fb?.nome || 'Plano',
-      tagline: raw.tagline || fb?.tagline || (key && PLAN_TAGLINES[key]) || '',
-      descricao: fb?.descricao || raw.descricao || '',
-      preco_anual:
-        raw.preco_anual == null || raw.preco_anual === ''
-          ? fb?.preco_anual == null
-            ? null
-            : Number(fb.preco_anual)
-          : Number(raw.preco_anual),
+      tagline: taglineDb || fb?.tagline || (key && PLAN_TAGLINES[key]) || '',
+      descricao: descricaoDb || fb?.descricao || '',
+      preco_anual: precoDb != null ? precoDb : fb?.preco_anual == null ? null : Number(fb.preco_anual),
       taxa_job: taxa,
       limite_aceites: limite,
       ordem: Number(raw.ordem != null ? raw.ordem : fb?.ordem || 0),
@@ -425,7 +463,8 @@
 
     const sorted = [...plans]
       .map(normalizePlan)
-      .filter((p) => p.status == null || Number(p.status) === 1)
+      .filter((p) => !String(p.codigo || '').includes('trial'))
+      .filter((p) => p.status == null || Number(p.status) === 1 || p.status === true)
       .sort((a, b) => a.ordem - b.ordem);
 
     if (!sorted.length) {
@@ -488,19 +527,17 @@
     const withoutTaxa =
       'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem';
 
-    async function request(select, statusFilter) {
-      const statusPart = statusFilter ? '&status=eq.1' : '';
-      const res = await fetch(
-        `${url}/rest/v1/planos_assinatura?select=${select}&order=ordem.asc${statusPart}`,
-        { headers }
-      );
+    async function request(select) {
+      const res = await fetch(`${url}/rest/v1/planos_assinatura?select=${select}&order=ordem.asc`, {
+        headers,
+      });
       return res;
     }
 
-    let res = await request(withTaxa, true);
+    let res = await request(withTaxa);
     if (res.status === 400) {
       planosTaxaColumnAvailable = false;
-      res = await request(withoutTaxa, true);
+      res = await request(withoutTaxa);
     } else if (res.ok) {
       planosTaxaColumnAvailable = true;
     }
@@ -509,21 +546,7 @@
     let rows = await res.json();
     if (!Array.isArray(rows)) rows = [];
 
-    if (!rows.length) {
-      let resAll = await request(withTaxa, false);
-      if (resAll.status === 400) {
-        planosTaxaColumnAvailable = false;
-        resAll = await request(withoutTaxa, false);
-      } else if (resAll.ok) {
-        planosTaxaColumnAvailable = true;
-      }
-      if (resAll.ok) {
-        const all = await resAll.json();
-        if (Array.isArray(all)) {
-          rows = all.filter((r) => r.status == null || Number(r.status) === 1);
-        }
-      }
-    }
+    rows = rows.filter((r) => isPlanRowActive(r));
 
     return rows;
   }
@@ -543,8 +566,15 @@
 
     try {
       const rows = await fetchPlanosFromSupabase(url, key);
+      if (!rows.length) {
+        console.warn(
+          'planos_assinatura: nenhum plano retornado (RLS, tabela vazia ou status inativo). ' +
+            'Execute supabase/planos_assinatura-rls-landing.sql no Supabase. Usando fallback local.'
+        );
+      }
       applyTrialFromPlanRows(rows);
-      renderPlans(rows.length ? rows : fallback);
+      const paidRows = rows.filter((r) => !isTrialPlanRow(r));
+      renderPlans(paidRows.length ? paidRows : fallback);
     } catch (err) {
       console.warn('planos_assinatura:', err);
       renderPlans(fallback);

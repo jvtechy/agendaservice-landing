@@ -69,7 +69,7 @@ A seção `#planos` espelha a tela **Minha Assinatura** do Web App (Dev):
 | Premium | R$ 479,88 | R$ 39,99 | 5% |
 
 O **Trial** aparece como faixa de status (como em Minha Assinatura no app), não como card de compra.
-Carrega `planos_assinatura` no Supabase (preço, nome, ordem). **Taxas exibidas:** `taxaPorCodigo` em `js/config.js` (20/16/12/5) enquanto `prioridadeTaxaSupabase` for `false`. Para usar só o banco, crie a coluna `taxa_job` (`supabase/planos_assinatura-taxa_job.sql`) e defina `prioridadeTaxaSupabase: true`.
+Carrega `planos_assinatura` no Supabase (preço, nome, ordem, descrição). **Obrigatório no Supabase:** execute `supabase/planos_assinatura-rls-landing.sql` (política de leitura para a chave `anon`); sem isso a API devolve lista vazia e a landing usa só `planosAssinaturaFallback`. **Taxas:** `taxaPorCodigo` em `js/config.js` (20/16/12/5); com coluna `taxa_job` (`supabase/planos_assinatura-taxa_job.sql`), valores do banco passam a valer quando `prioridadeTaxaSupabase: true` (ou quando não houver taxa no config).
 
 A seção **Por Dentro** (`porDentroGaleria` em `js/config.js`) renderiza 3×3 telas (9 PNGs em `assets/`, nomes com `SERVICOS` sem cedilha): 4 de cliente, depois 5 de prestador.
 
