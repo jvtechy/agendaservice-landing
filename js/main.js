@@ -464,7 +464,7 @@
     const sorted = [...plans]
       .map(normalizePlan)
       .filter((p) => !String(p.codigo || '').includes('trial'))
-      .filter((p) => p.status == null || Number(p.status) === 1 || p.status === true)
+      .filter((p) => isPlanRowActive({ status: p.status }))
       .sort((a, b) => a.ordem - b.ordem);
 
     if (!sorted.length) {
