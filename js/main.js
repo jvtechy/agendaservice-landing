@@ -216,9 +216,16 @@
     const taxaDefault =
       cfg.taxaPorCodigo && cfg.taxaPorCodigo.trial != null ? cfg.taxaPorCodigo.trial : 20;
     const taxa =
-      cfg.prioridadeTaxaSupabase && trial.taxa_job != null
+      trial.taxa_job != null && !Number.isNaN(Number(trial.taxa_job))
         ? Number(trial.taxa_job)
         : Number(taxaDefault);
+
+    const tituloEl = document.getElementById('planos-trial-titulo');
+    if (tituloEl) {
+      const nome = trial.nome || 'Trial';
+      const label = trial.statusLabel || trial.codigo || 'trial';
+      tituloEl.innerHTML = `${nome} — <span class="text-primary">${label}</span>`;
+    }
 
     document.querySelectorAll('[data-trial-aceites]').forEach((el) => {
       el.textContent = String(aceites);
@@ -226,6 +233,21 @@
     document.querySelectorAll('[data-trial-dias]').forEach((el) => {
       el.textContent = String(dias);
     });
+
+    const resumoEl = document.getElementById('planos-trial-resumo');
+    if (resumoEl) {
+      const descDb =
+        trial.descricao != null && String(trial.descricao).trim() !== ''
+          ? String(trial.descricao).trim()
+          : '';
+      if (descDb) {
+        resumoEl.textContent = descDb;
+      } else {
+        resumoEl.innerHTML = `Restam <strong class="text-white" data-trial-aceites>${aceites}</strong> aceite(s) e
+                <strong class="text-white" data-trial-dias>${dias}</strong> dia(s) de trial.`;
+      }
+    }
+
     const taxaEl = document.getElementById('planos-trial-taxa');
     if (taxaEl) taxaEl.textContent = `Taxa atual por job: ${taxa}%`;
 
@@ -256,7 +278,7 @@
 
   function extractTaxaFromRow(raw) {
     if (!raw || typeof raw !== 'object') return null;
-    const cols = ['taxa_job', 'taxa', 'taxa_percent', 'percentual_taxa'];
+    const cols = ['taxa_servico_pct', 'taxa_job', 'taxa', 'taxa_percent', 'percentual_taxa'];
     for (const col of cols) {
       if (raw[col] == null || raw[col] === '') continue;
       const n = Number(raw[col]);
@@ -268,11 +290,7 @@
   function resolveTaxaJob(raw, key) {
     const fromDb = extractTaxaFromRow(raw);
     const fromConfig = key && TAXA_POR_CODIGO[key] != null ? Number(TAXA_POR_CODIGO[key]) : null;
-    if (
-      planosTaxaColumnAvailable &&
-      fromDb != null &&
-      (cfg.prioridadeTaxaSupabase || fromConfig == null)
-    ) {
+    if (fromDb != null && (cfg.prioridadeTaxaSupabase || planosTaxaColumnAvailable || fromConfig == null)) {
       return fromDb;
     }
     if (fromConfig != null) return fromConfig;
@@ -362,9 +380,11 @@
     const taglineDb =
       raw.tagline != null && String(raw.tagline).trim() !== ''
         ? String(raw.tagline).trim()
-        : raw.subtitulo != null && String(raw.subtitulo).trim() !== ''
-          ? String(raw.subtitulo).trim()
-          : '';
+        : raw.frase_destaque != null && String(raw.frase_destaque).trim() !== ''
+          ? String(raw.frase_destaque).trim()
+          : raw.subtitulo != null && String(raw.subtitulo).trim() !== ''
+            ? String(raw.subtitulo).trim()
+            : '';
 
     return {
       codigo: key || codigo,
@@ -393,14 +413,21 @@
       return c.includes('trial');
     });
     if (!trialRow) return;
-    const trial = cfg.trialAssinatura || {};
-    if (trialRow.trial_dias != null) trial.trial_dias = Number(trialRow.trial_dias);
+    const trial = { ...(cfg.trialAssinatura || {}) };
+    if (trialRow.nome) trial.nome = String(trialRow.nome);
+    if (trialRow.codigo) trial.codigo = String(trialRow.codigo);
+    if (trialRow.descricao != null && String(trialRow.descricao).trim() !== '') {
+      trial.descricao = String(trialRow.descricao).trim();
+    }
+    if (trialRow.duracao_trial_dias != null) {
+      trial.trial_dias = Number(trialRow.duracao_trial_dias);
+    } else if (trialRow.trial_dias != null) {
+      trial.trial_dias = Number(trialRow.trial_dias);
+    }
     if (trialRow.trial_aceites != null) trial.trial_aceites = Number(trialRow.trial_aceites);
     if (trialRow.limite_aceites != null) trial.trial_aceites = Number(trialRow.limite_aceites);
     const t = extractTaxaFromRow(trialRow);
-    if (cfg.prioridadeTaxaSupabase && planosTaxaColumnAvailable && t != null) {
-      trial.taxa_job = t;
-    }
+    if (t != null) trial.taxa_job = t;
     cfg.trialAssinatura = trial;
   }
 
@@ -457,7 +484,8 @@
     });
   }
 
-  function renderPlans(plans) {
+  function renderPlans(plans, options) {
+    const opts = options || {};
     const grid = document.getElementById('planos-grid');
     if (!grid) return;
 
@@ -466,6 +494,14 @@
       .filter((p) => !String(p.codigo || '').includes('trial'))
       .filter((p) => isPlanRowActive({ status: p.status }))
       .sort((a, b) => a.ordem - b.ordem);
+
+    if (!sorted.length && !opts._usedFallback) {
+      const fb = Array.isArray(cfg.planosAssinaturaFallback) ? cfg.planosAssinaturaFallback : [];
+      if (fb.length && plans !== fb) {
+        renderPlans(fb, { _usedFallback: true });
+        return;
+      }
+    }
 
     if (!sorted.length) {
       grid.innerHTML =
@@ -522,9 +558,9 @@
       Authorization: `Bearer ${key}`,
       Accept: 'application/json',
     };
-    const withTaxa =
-      'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem,taxa_job';
-    const withoutTaxa =
+    const selectFull =
+      'id,nome,codigo,descricao,preco_anual,preco_mensal_ref,limite_aceites,status,ordem,taxa_servico_pct,duracao_trial_dias,frase_destaque,is_trial';
+    const selectMinimal =
       'id,nome,codigo,descricao,preco_anual,limite_aceites,status,ordem';
 
     async function request(select) {
@@ -534,17 +570,17 @@
       return res;
     }
 
-    let res = await request(withTaxa);
+    let res = await request(selectFull);
     if (res.status === 400) {
       planosTaxaColumnAvailable = false;
-      res = await request(withoutTaxa);
-    } else if (res.ok) {
-      planosTaxaColumnAvailable = true;
+      res = await request(selectMinimal);
     }
 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     let rows = await res.json();
     if (!Array.isArray(rows)) rows = [];
+
+    planosTaxaColumnAvailable = rows.some((r) => extractTaxaFromRow(r) != null);
 
     rows = rows.filter((r) => isPlanRowActive(r));
 
